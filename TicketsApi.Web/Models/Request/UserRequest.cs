@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TicketsApi.Web.Data.Entities;
 
 namespace TicketsApi.Web.Models.Request
 {
     public class UserRequest
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Email { get; set; }
@@ -21,5 +22,7 @@ namespace TicketsApi.Web.Models.Request
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string PhoneNumber { get; set; }
 
+        [Display(Name = "Empresa")]
+        public int CompanyId { get; set; }
     }
 }

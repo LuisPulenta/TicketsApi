@@ -12,7 +12,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using TicketsApi.Common.Enums;
 using TicketsApi.Web.Data;
 using TicketsApi.Web.Data.Entities;
@@ -87,6 +86,8 @@ namespace TicketsApi.Àpi.Controllers.Àpi
 
         //-------------------------------------------------------------------------------------------------
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("CreateUser")]
         public async Task<ActionResult<User>> PostUser(RegisterRequest request)
         {
             if (!ModelState.IsValid)
@@ -94,6 +95,8 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 return BadRequest(ModelState);
             }
 
+            Company company = await _context.Companies
+                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
 
             User user = await _userHelper.GetUserAsync(request.Email);
             if (user != null)
@@ -109,6 +112,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
                 UserType = UserType.User,
+                CompanyId=company.Id,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
@@ -126,6 +130,92 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
 
             return Ok(user);
+        }
+
+
+        //-------------------------------------------------------------------------------------------------
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("CreateAdmin")]
+        public async Task<ActionResult<User>> PostAdmin(RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Company company = await _context.Companies
+                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
+
+            User user = await _userHelper.GetUserAsync(request.Email);
+            if (user != null)
+            {
+                return BadRequest("Ya existe un usuario registrado con  ese email.");
+            }
+
+            user = new User
+            {
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                PhoneNumber = request.PhoneNumber,
+                UserName = request.Email,
+                UserType = UserType.Admin,
+                CompanyId = company.Id,
+            };
+
+            await _userHelper.AddUserAsync(user, request.Password);
+            await _userHelper.AddUserToRoleAsync(user, user.UserType.ToString());
+
+            string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+            string tokenLink = Url.Action("ConfirmEmail", "Account", new
+            {
+                userid = user.Id,
+                token = myToken
+            }, protocol: HttpContext.Request.Scheme);
+
+            _mailHelper.SendMail(user.Email, "Tickets - Confirmación de cuenta", $"<h1>Tickets - Confirmación de cuenta</h1>" +
+                $"Para habilitar el usuario, " +
+                $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
+
+            return Ok(user);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUser(string id, UserRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id.ToString() != request.Id)
+            {
+                return BadRequest();
+            }
+
+            Company company = await _context.Companies
+                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
+
+            if (company == null)
+            {
+                return BadRequest("No existe la Empresa");
+            }
+
+            User user = await _userHelper.GetUserAsync(request.Email);
+            if (user == null)
+            {
+                return BadRequest("No existe el usuario.");
+            }
+
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.PhoneNumber = request.PhoneNumber;
+            user.CompanyId=request.CompanyId;
+
+            await _userHelper.UpdateUserAsync(user);
+            return NoContent();
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -187,8 +277,8 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         }
 
         //-------------------------------------------------------------------------------------------------
-        // GET: api/Users
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users
@@ -198,6 +288,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
 
         //-------------------------------------------------------------------------------------------------
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("GetUserByEmail")]
         public async Task<IActionResult> GetUser(EmailRequest email)
         {
@@ -206,13 +297,13 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 return BadRequest();
             }
 
-            var cliente = await _context.Users.FirstOrDefaultAsync(o => o.Email.ToLower() == email.Email.ToLower());
+            var user = await _context.Users.FirstOrDefaultAsync(o => o.Email.ToLower() == email.Email.ToLower());
 
-            if (cliente == null)
+            if (user == null)
             {
                 return BadRequest();
             }
-            return Ok(cliente);
+            return Ok(user);
         }
     }
 }

@@ -10,20 +10,13 @@ namespace TicketsApi.Web.Data
         {
         }
         
-        //public DbSet<Event> Events { get; set; }
+        public DbSet<Company> Companies { get; set; }
         
-
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<User>(dep =>
-            {
-                //dep.HasIndex("Modulo", "Document").IsUnique();
-            });
-
+            modelBuilder.Entity<Company>().HasIndex(x => x.Name).IsUnique();
         }
+
     }
 }

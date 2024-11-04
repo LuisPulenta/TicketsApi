@@ -21,5 +21,9 @@ namespace TicketsApi.Web.Models
         [MinLength(6, ErrorMessage = "El campo {0} debe tener una longitud mínima de {1} carácteres.")]
         [Compare("Password", ErrorMessage = "La contraseña y confirmacíón de contraseña no son iguales.")]
         public string PasswordConfirm { get; set; }
+
+        [Display(Name = "Empresa")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public int CompanyId { get; set; }
     }
 }

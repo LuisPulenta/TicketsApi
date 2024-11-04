@@ -35,7 +35,7 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        @if (User.Identity.IsAuthenticated)
+                       @*  @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a>
@@ -47,7 +47,7 @@
                         else
                         {
                             <li><a asp-area="" asp-controller="Account" asp-action="Login">Iniciar Sesión</a></li>
-                        }
+                        } *@
                     </ul>
 
                 </div>
@@ -62,7 +62,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidad</a>
+            &copy; 2024 - App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidad</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
