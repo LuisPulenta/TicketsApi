@@ -38,9 +38,9 @@ namespace TicketsApi.Web.Data.Entities
         ? $"http://keypress.serveftp.net:90/Tickets/images/logos/noimage.png"
         : $"http://keypress.serveftp.net:90/Tickets{Photo.Substring(1)}";
 
-        
-        
-
         public ICollection<User>? Users { get; set; }
+
+        [Display(Name = "Usuarios")]
+        public int UsersNumber => Users == null ? 0 : Users.Count;
     }
 }
