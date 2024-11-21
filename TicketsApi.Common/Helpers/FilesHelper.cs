@@ -19,6 +19,7 @@ namespace TicketsApi.Common.Helpers
             {
                 stream.Position = 0;
                 var path = Path.Combine(Directory.GetCurrentDirectory(), folder, name);
+                //var path = Path.Combine("D:\\Xamarin\\TicketsApi\\TicketsApi.WEB\\", folder, name);
                 File.WriteAllBytes(path, stream.ToArray());
             }
             catch

@@ -20,7 +20,7 @@ namespace TicketsApi.Web.Data.Entities
         public UserType UserType { get; set; }
 
         [Display(Name = "Empresa")]
-        public int CompanyId { get; set; }
+        public Company? Company { get; set; }
 
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";

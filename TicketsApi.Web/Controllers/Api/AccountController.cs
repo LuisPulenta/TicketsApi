@@ -112,7 +112,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
                 UserType = UserType.User,
-                CompanyId=company.Id,
+                Company=company,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
@@ -161,7 +161,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
                 UserType = UserType.Admin,
-                CompanyId = company.Id,
+                Company = company,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
@@ -212,7 +212,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
-            user.CompanyId=request.CompanyId;
+            user.Company=company;
 
             await _userHelper.UpdateUserAsync(user);
             return NoContent();

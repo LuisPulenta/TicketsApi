@@ -85,7 +85,7 @@ namespace TicketsApi.Web.Helpers
             currentUser.LastName = user.LastName;
             currentUser.FirstName = user.FirstName;
             currentUser.PhoneNumber = user.PhoneNumber;
-            currentUser.CompanyId=user.CompanyId;
+            currentUser.Company=user.Company;
             return await _userManager.UpdateAsync(currentUser);
         }
 
@@ -109,7 +109,7 @@ namespace TicketsApi.Web.Helpers
                  PhoneNumber = model.PhoneNumber,
                 UserName = model.Username,
                 UserType = userType,
-                CompanyId= company.Id,
+                Company= company,
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, model.Password);

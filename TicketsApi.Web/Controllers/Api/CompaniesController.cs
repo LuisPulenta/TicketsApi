@@ -8,6 +8,8 @@ using TicketsApi.Web.Data.Entities;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using TicketsApi.Common.Helpers;
 
 namespace TicketsApi.Web.Controllers.Api
 {
@@ -17,10 +19,12 @@ namespace TicketsApi.Web.Controllers.Api
     public class CompaniesController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IFilesHelper _filesHelper;
 
-        public CompaniesController(DataContext context)
+        public CompaniesController(DataContext context, IFilesHelper filesHelper)
         {
             _context = context;
+            _filesHelper = filesHelper;
         }
 
         //-----------------------------------------------------------------------------------
@@ -53,17 +57,50 @@ namespace TicketsApi.Web.Controllers.Api
                 return BadRequest();
             }
 
-            _context.Entry(company).State = EntityState.Modified;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            Company oldCompany = await _context.Companies.FirstOrDefaultAsync(o => o.Id == company.Id);
+
+            //Foto
+            string imageUrl = string.Empty;
+            if (company.Photo != null && company.Photo.Length > 0)
+            {
+                imageUrl = string.Empty;
+                byte[] imageArray = Convert.FromBase64String(company.Photo);
+                var stream = new MemoryStream(imageArray);
+                var guid = Guid.NewGuid().ToString();
+                var file = $"{guid}.jpg";
+                var folder = "wwwroot\\images\\Logos";
+                var fullPath = $"~/images/Logos/{file}";
+                var response = _filesHelper.UploadPhoto(stream, folder, file);
+
+                if (response)
+                {
+                    imageUrl = fullPath;
+                    oldCompany!.Photo = imageUrl;
+                }
+            }
+
+            oldCompany!.Active = company.Active;
+            oldCompany!.CreateUser = company.CreateUser;
+            oldCompany!.CreateDate = company.CreateDate;
+            oldCompany.LastChangeUser = company.LastChangeUser;
+            oldCompany!.LastChangeDate = company.LastChangeDate;
+            oldCompany!.Name = company.Name;
+
+            _context.Update(oldCompany);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException dbUpdateException)
             {
-                if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                if (dbUpdateException.InnerException!.Message.Contains("duplicada"))
                 {
-                    return BadRequest("Ya existe esta Empresa.");
+                    return BadRequest("Ya existe una empresa con el mismo nombre.");
                 }
                 else
                 {
@@ -75,23 +112,46 @@ namespace TicketsApi.Web.Controllers.Api
                 return BadRequest(exception.Message);
             }
 
-            return NoContent();
+            return Ok(company);
         }
         
         //-----------------------------------------------------------------------------------
         [HttpPost]
         public async Task<ActionResult<Company>> PostCompany(Company company)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            //Foto
+
+
+            if (company.Photo != null) { 
+
+                byte[] imageArray = Convert.FromBase64String(company.Photo);
+                var stream = new MemoryStream(imageArray);
+                var guid = Guid.NewGuid().ToString();
+                var file = $"{guid}.jpg";
+                var folder = "wwwroot\\images\\Logos";
+                var fullPath = $"~/images/Logos/{file}";
+                var response = _filesHelper.UploadPhoto(stream, folder, file);
+
+                if (response)
+                {
+                    company.Photo = fullPath;
+                }
+            }
             _context.Companies.Add(company);
 
             try
             {
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetCompany", new { id = company.Id }, company);
+                return Ok(company);
             }
             catch (DbUpdateException dbUpdateException)
             {
-                if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                if (dbUpdateException.InnerException.Message.Contains("duplicada"))
                 {
                     return BadRequest("Ya existe esta Empresa.");
                 }
@@ -120,10 +180,15 @@ namespace TicketsApi.Web.Controllers.Api
 
             return NoContent();
         }
-
-        private bool ProcedureExists(int id)
+        
+        //-----------------------------------------------------------------------------------
+        [HttpGet("combo")]
+        public async Task<ActionResult> GetCombo()
         {
-            return _context.Companies.Any(e => e.Id == id);
+            return Ok(await _context.Companies
+                  .OrderBy(c => c.Name)
+                  .Where(c => c.Active && c.Id != 1)
+                  .ToListAsync());
         }
     }
 }

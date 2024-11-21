@@ -4,6 +4,8 @@ using TicketsApi.Web.Helpers;
 using TicketsApi.Common.Enums;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 
 namespace TicketsApi.Web.Data
 {
@@ -26,7 +28,8 @@ namespace TicketsApi.Web.Data
             await CheckUserAsync("Luis", "Núñez", "luis@yopmail.com", "351 681 4963",UserType.Admin,1);
             await CheckUserAsync("Pablo", "Lacuadri", "pablo@yopmail.com", "351 681 4963", UserType.Admin,1);
             await CheckUserAsync("Lionel", "Messi", "messi@yopmail.com", "311 322 4620",UserType.User,2);
-            await CheckUserAsync("Diego", "Maradona", "maradona@yopmail.com", "311 322 4620",UserType.User,2);
+            await CheckUserAsync("Diego", "Maradona", "maradona@yopmail.com", "311 322 4620",UserType.User,3);
+            await CheckCompaniesAsync();
 
         }
 
@@ -54,7 +57,7 @@ namespace TicketsApi.Web.Data
                     PhoneNumber = phoneNumber,
                     UserName = email,
                     UserType = userType,
-                    CompanyId =company.Id
+                    Company = company
                 };
 
                 await _userHelper.AddUserAsync(user, "123456");
@@ -69,9 +72,14 @@ namespace TicketsApi.Web.Data
         private async Task CheckCompaniesAsync()
         {
             if (!_context.Companies.Any())
+
             {
-                _context.Companies.Add(new Company { Name = "Keypress" });
-                _context.Companies.Add(new Company { Name = "Prueba" });
+                DateTime ahora = DateTime.Now;
+                
+
+                _context.Companies.Add(new Company { Name = "Keypress", CreateDate=ahora,CreateUser= "Luis Núñez", LastChangeDate=ahora,LastChangeUser= "Luis Núñez", Active=true,Photo= "~/images/Logos/logokp.png" });
+                _context.Companies.Add(new Company { Name = "Fleet", CreateDate = ahora, CreateUser = "Luis Núñez", LastChangeDate = ahora, LastChangeUser = "Luis Núñez", Active = true, Photo = "~/images/Logos/logofleet.png" });
+                _context.Companies.Add(new Company { Name = "Rowing", CreateDate = ahora, CreateUser = "Luis Núñez", LastChangeDate = ahora, LastChangeUser = "Luis Núñez", Active = true, Photo = "~/images/Logos/logorowing.png" });
                 await _context.SaveChangesAsync();
             }
         }
