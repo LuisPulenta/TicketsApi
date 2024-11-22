@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TicketsApi.Common.Enums;
+using TicketsApi.Common.Models;
 using TicketsApi.Web.Data;
 using TicketsApi.Web.Data.Entities;
 using TicketsApi.Web.Helpers;
@@ -281,11 +282,32 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users
-                .OrderBy(x => x.Id)
+            List<User> users = await _context.Users
+                .Include(x => x.Company)
+                .OrderBy(x => x.Company.Name + x.LastName + x.FirstName)
                 .ToListAsync();
-        }
 
+            List<UserResponse> usersResponse = new List<UserResponse>();
+
+            foreach (User user in users)
+            {
+
+                UserResponse userResponse = new UserResponse
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    EmailConfirmed = user.EmailConfirmed,
+                    PhoneNumber = user.PhoneNumber,
+                    Company = user.Company.Name,
+                    UserType = user.UserType,
+                };
+                usersResponse.Add(userResponse);
+            }
+            return Ok(usersResponse);
+        }
+    
         //-------------------------------------------------------------------------------------------------
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
