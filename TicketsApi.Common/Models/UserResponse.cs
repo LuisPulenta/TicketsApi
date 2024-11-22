@@ -1,4 +1,6 @@
-﻿using TicketsApi.Common.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using System;
+using TicketsApi.Common.Enums;
 
 namespace TicketsApi.Common.Models
 {
@@ -12,6 +14,11 @@ namespace TicketsApi.Common.Models
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public string PhoneNumber { get; set; }
+        public DateTime CreateDate { get; set; }
+        public string CreateUser { get; set; }
+        public DateTime LastChangeDate { get; set; }
+        public string LastChangeUser { get; set; }
+        public bool Active { get; set; }
         public string FullName => $"{FirstName} {LastName}";
     }
 }

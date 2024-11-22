@@ -302,6 +302,11 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                     PhoneNumber = user.PhoneNumber,
                     Company = user.Company.Name,
                     UserType = user.UserType,
+                    CreateDate = user.CreateDate,
+                    CreateUser  = user.CreateUser,
+                    LastChangeDate  = user.LastChangeDate,  
+                    LastChangeUser      = user.LastChangeUser,
+                    Active  =user.Active,
                 };
                 usersResponse.Add(userResponse);
             }

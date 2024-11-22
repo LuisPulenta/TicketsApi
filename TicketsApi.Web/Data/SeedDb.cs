@@ -43,6 +43,8 @@ namespace TicketsApi.Web.Data
         //--------------------------------------------------------------------------------------------
         private async Task CheckUserAsync(string firstName, string lastName, string email, string phoneNumber, UserType userType,int companyId)
         {
+            DateTime ahora = DateTime.Now;
+
             Company company = await _context.Companies
                 .FirstOrDefaultAsync(x => x.Id == companyId);
 
@@ -57,7 +59,12 @@ namespace TicketsApi.Web.Data
                     PhoneNumber = phoneNumber,
                     UserName = email,
                     UserType = userType,
-                    Company = company
+                    Company = company,
+                    CreateDate= ahora,
+                    CreateUser = "Luis Núñez",
+                    LastChangeDate= ahora,
+                    LastChangeUser="Luis Núñez",
+                    Active= true,
                 };
 
                 await _userHelper.AddUserAsync(user, "123456");

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 using TicketsApi.Common.Enums;
 
@@ -21,6 +22,25 @@ namespace TicketsApi.Web.Data.Entities
 
         [Display(Name = "Empresa")]
         public Company? Company { get; set; }
+
+        [Display(Name = "Fecha Creación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public DateTime CreateDate { get; set; }
+
+        [Display(Name = "Usuario Creación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string CreateUser { get; set; }
+
+        [Display(Name = "Fecha Ultima Modificación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public DateTime LastChangeDate { get; set; }
+
+        [Display(Name = "Usuario Ultima Modificación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string LastChangeUser { get; set; }
+
+        [Display(Name = "Activo")]
+        public bool Active { get; set; }
 
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";
