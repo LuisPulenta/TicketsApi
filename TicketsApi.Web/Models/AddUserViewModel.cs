@@ -24,6 +24,6 @@ namespace TicketsApi.Web.Models
 
         [Display(Name = "Empresa")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public int CompanyId { get; set; }
+        public string Company { get; set; }
     }
 }

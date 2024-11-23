@@ -25,10 +25,10 @@ namespace TicketsApi.Web.Data
             await _context.Database.EnsureCreatedAsync();
             await CheckCompaniesAsync();
             await CheckRolesAsycn();
-            await CheckUserAsync("Luis", "Núñez", "luis@yopmail.com", "351 681 4963",UserType.Admin,1);
-            await CheckUserAsync("Pablo", "Lacuadri", "pablo@yopmail.com", "351 681 4963", UserType.Admin,1);
-            await CheckUserAsync("Lionel", "Messi", "messi@yopmail.com", "311 322 4620",UserType.User,2);
-            await CheckUserAsync("Diego", "Maradona", "maradona@yopmail.com", "311 322 4620",UserType.User,3);
+            await CheckUserAsync("Luis", "Núñez", "luis@yopmail.com", "351 681 4963", UserType.Admin, "KeyPress");
+            await CheckUserAsync("Pablo", "Lacuadri", "pablo@yopmail.com", "351 681 4963", UserType.Admin,  "KeyPress");
+            await CheckUserAsync("Lionel", "Messi", "messi@yopmail.com", "311 322 4620", UserType.User,  "Fleet");
+            await CheckUserAsync("Diego", "Maradona", "maradona@yopmail.com", "311 322 4620", UserType.User,  "Rowing");
             await CheckCompaniesAsync();
 
         }
@@ -41,12 +41,9 @@ namespace TicketsApi.Web.Data
         }
 
         //--------------------------------------------------------------------------------------------
-        private async Task CheckUserAsync(string firstName, string lastName, string email, string phoneNumber, UserType userType,int companyId)
+        private async Task CheckUserAsync(string firstName, string lastName, string email, string phoneNumber, UserType userType, string company)
         {
             DateTime ahora = DateTime.Now;
-
-            Company company = await _context.Companies
-                .FirstOrDefaultAsync(x => x.Id == companyId);
 
             User user = await _userHelper.GetUserAsync(email);
             if (user == null)
@@ -60,11 +57,11 @@ namespace TicketsApi.Web.Data
                     UserName = email,
                     UserType = userType,
                     Company = company,
-                    CreateDate= ahora,
+                    CreateDate = ahora,
                     CreateUser = "Luis Núñez",
-                    LastChangeDate= ahora,
-                    LastChangeUser="Luis Núñez",
-                    Active= true,
+                    LastChangeDate = ahora,
+                    LastChangeUser = "Luis Núñez",
+                    Active = true,
                 };
 
                 await _userHelper.AddUserAsync(user, "123456");
@@ -82,9 +79,9 @@ namespace TicketsApi.Web.Data
 
             {
                 DateTime ahora = DateTime.Now;
-                
 
-                _context.Companies.Add(new Company { Name = "Keypress", CreateDate=ahora,CreateUser= "Luis Núñez", LastChangeDate=ahora,LastChangeUser= "Luis Núñez", Active=true,Photo= "~/images/Logos/logokp.png" });
+
+                _context.Companies.Add(new Company { Name = "Keypress", CreateDate = ahora, CreateUser = "Luis Núñez", LastChangeDate = ahora, LastChangeUser = "Luis Núñez", Active = true, Photo = "~/images/Logos/logokp.png" });
                 _context.Companies.Add(new Company { Name = "Fleet", CreateDate = ahora, CreateUser = "Luis Núñez", LastChangeDate = ahora, LastChangeUser = "Luis Núñez", Active = true, Photo = "~/images/Logos/logofleet.png" });
                 _context.Companies.Add(new Company { Name = "Rowing", CreateDate = ahora, CreateUser = "Luis Núñez", LastChangeDate = ahora, LastChangeUser = "Luis Núñez", Active = true, Photo = "~/images/Logos/logorowing.png" });
                 await _context.SaveChangesAsync();

@@ -21,7 +21,7 @@ namespace TicketsApi.Web.Data.Entities
         public UserType UserType { get; set; }
 
         [Display(Name = "Empresa")]
-        public Company? Company { get; set; }
+        public string Company { get; set; }
 
         [Display(Name = "Fecha Creación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]

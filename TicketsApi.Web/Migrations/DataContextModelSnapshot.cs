@@ -201,6 +201,9 @@ namespace TicketsApi.Web.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Company")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
@@ -343,11 +346,9 @@ namespace TicketsApi.Web.Migrations
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.User", b =>
                 {
-                    b.HasOne("TicketsApi.Web.Data.Entities.Company", "Company")
+                    b.HasOne("TicketsApi.Web.Data.Entities.Company", null)
                         .WithMany("Users")
                         .HasForeignKey("CompanyId");
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.Company", b =>

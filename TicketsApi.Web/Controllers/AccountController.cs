@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using TicketsApi.Common.Models;
 using TicketsApi.Web.Data;
 using TicketsApi.Web.Data.Entities;
 using TicketsApi.Web.Helpers;
@@ -57,6 +59,8 @@ namespace Vehicles2.Api.Controllers
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             User user = await _userHelper.GetUserAsync(model.UserName);
+
+           
             if (user != null)
             {
                 IdentityResult result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);

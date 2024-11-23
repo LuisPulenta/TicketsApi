@@ -23,6 +23,6 @@ namespace TicketsApi.Web.Models.Request
         public string PhoneNumber { get; set; }
 
         [Display(Name = "Empresa")]
-        public int CompanyId { get; set; }
+        public string Company { get; set; }
     }
 }

@@ -96,9 +96,6 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 return BadRequest(ModelState);
             }
 
-            Company company = await _context.Companies
-                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
-
             User user = await _userHelper.GetUserAsync(request.Email);
             if (user != null)
             {
@@ -113,7 +110,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
                 UserType = UserType.User,
-                Company=company,
+                Company = request.Company,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
@@ -145,9 +142,6 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 return BadRequest(ModelState);
             }
 
-            Company company = await _context.Companies
-                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
-
             User user = await _userHelper.GetUserAsync(request.Email);
             if (user != null)
             {
@@ -162,7 +156,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
                 UserType = UserType.Admin,
-                Company = company,
+                Company = request.Company,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
@@ -196,14 +190,6 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 return BadRequest();
             }
 
-            Company company = await _context.Companies
-                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
-
-            if (company == null)
-            {
-                return BadRequest("No existe la Empresa");
-            }
-
             User user = await _userHelper.GetUserAsync(request.Email);
             if (user == null)
             {
@@ -213,7 +199,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
-            user.Company=company;
+            user.Company = request.Company;
 
             await _userHelper.UpdateUserAsync(user);
             return NoContent();
@@ -283,36 +269,13 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             List<User> users = await _context.Users
-                .Include(x => x.Company)
-                .OrderBy(x => x.Company.Name + x.LastName + x.FirstName)
+                .OrderBy(x => x.Company + x.LastName + x.FirstName)
                 .ToListAsync();
 
-            List<UserResponse> usersResponse = new List<UserResponse>();
-
-            foreach (User user in users)
-            {
-
-                UserResponse userResponse = new UserResponse
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    EmailConfirmed = user.EmailConfirmed,
-                    PhoneNumber = user.PhoneNumber,
-                    Company = user.Company.Name,
-                    UserType = user.UserType,
-                    CreateDate = user.CreateDate,
-                    CreateUser  = user.CreateUser,
-                    LastChangeDate  = user.LastChangeDate,  
-                    LastChangeUser      = user.LastChangeUser,
-                    Active  =user.Active,
-                };
-                usersResponse.Add(userResponse);
-            }
-            return Ok(usersResponse);
+          
+            return Ok(users);
         }
-    
+
         //-------------------------------------------------------------------------------------------------
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

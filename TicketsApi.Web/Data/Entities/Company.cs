@@ -33,7 +33,7 @@ namespace TicketsApi.Web.Data.Entities
         public bool Active { get; set; }
 
         [Display(Name = "Logo")]
-        public string? Photo { get; set; }
+        public string Photo { get; set; }
         public string PhotoFullPath => string.IsNullOrEmpty(Photo)
         ? $"http://keypress.serveftp.net:90/Tickets/images/logos/noimage.png"
         : $"http://keypress.serveftp.net:90/Tickets{Photo.Substring(1)}";
