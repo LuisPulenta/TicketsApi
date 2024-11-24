@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using TicketsApi.Common.Helpers;
+using TicketsApi.Web.Models.Request;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace TicketsApi.Web.Controllers.Api
 {
@@ -117,20 +119,33 @@ namespace TicketsApi.Web.Controllers.Api
         
         //-----------------------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<Company>> PostCompany(Company company)
+        public async Task<ActionResult<Company>> PostCompany(CompanyRequest companyRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            DateTime ahora = DateTime.Now;
+
+            Company newCompany = new Company
+            {
+                Id = 0,
+                Name = companyRequest.Name,
+                Active = true,
+                CreateUser = companyRequest.CreateUser,
+                CreateDate = ahora,
+                LastChangeUser = companyRequest.LastChangeUser,
+                LastChangeDate = ahora,
+                Photo = null
+            };
+
+
             //Foto
 
 
-            if (company.Photo != null) { 
-
-                byte[] imageArray = Convert.FromBase64String(company.Photo);
-                var stream = new MemoryStream(imageArray);
+            if (companyRequest.ImageArray != null) {
+                var stream = new MemoryStream(companyRequest.ImageArray);
                 var guid = Guid.NewGuid().ToString();
                 var file = $"{guid}.jpg";
                 var folder = "wwwroot\\images\\Logos";
@@ -139,15 +154,15 @@ namespace TicketsApi.Web.Controllers.Api
 
                 if (response)
                 {
-                    company.Photo = fullPath;
+                    newCompany.Photo = fullPath;
                 }
             }
-            _context.Companies.Add(company);
+            _context.Companies.Add(newCompany);
 
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok(company);
+                return Ok(companyRequest);
             }
             catch (DbUpdateException dbUpdateException)
             {
