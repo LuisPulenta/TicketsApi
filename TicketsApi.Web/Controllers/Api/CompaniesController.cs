@@ -162,7 +162,7 @@ namespace TicketsApi.Web.Controllers.Api
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok(companyRequest);
+                return Ok(newCompany);
             }
             catch (DbUpdateException dbUpdateException)
             {
