@@ -52,9 +52,9 @@ namespace TicketsApi.Web.Controllers.Api
 
         //-----------------------------------------------------------------------------------
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(int id, Company company)
+        public async Task<IActionResult> PutCompany(int id, CompanyRequest companyRequest)
         {
-            if (id != company.Id)
+            if (id != companyRequest.Id)
             {
                 return BadRequest();
             }
@@ -64,15 +64,14 @@ namespace TicketsApi.Web.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            Company oldCompany = await _context.Companies.FirstOrDefaultAsync(o => o.Id == company.Id);
+            Company oldCompany = await _context.Companies.FirstOrDefaultAsync(o => o.Id == companyRequest.Id);
 
             //Foto
             string imageUrl = string.Empty;
-            if (company.Photo != null && company.Photo.Length > 0)
+            if (companyRequest.ImageArray != null && companyRequest.ImageArray.Length > 0)
             {
                 imageUrl = string.Empty;
-                byte[] imageArray = Convert.FromBase64String(company.Photo);
-                var stream = new MemoryStream(imageArray);
+                var stream = new MemoryStream(companyRequest.ImageArray);
                 var guid = Guid.NewGuid().ToString();
                 var file = $"{guid}.jpg";
                 var folder = "wwwroot\\images\\Logos";
@@ -86,12 +85,12 @@ namespace TicketsApi.Web.Controllers.Api
                 }
             }
 
-            oldCompany!.Active = company.Active;
-            oldCompany!.CreateUser = company.CreateUser;
-            oldCompany!.CreateDate = company.CreateDate;
-            oldCompany.LastChangeUser = company.LastChangeUser;
-            oldCompany!.LastChangeDate = company.LastChangeDate;
-            oldCompany!.Name = company.Name;
+            DateTime ahora = DateTime.Now;
+
+            oldCompany!.Active = companyRequest.Active;
+            oldCompany.LastChangeUser = companyRequest.LastChangeUser;
+            oldCompany!.LastChangeDate = ahora;
+            oldCompany!.Name = companyRequest.Name;
 
             _context.Update(oldCompany);
             try
@@ -114,7 +113,7 @@ namespace TicketsApi.Web.Controllers.Api
                 return BadRequest(exception.Message);
             }
 
-            return Ok(company);
+            return Ok(oldCompany);
         }
         
         //-----------------------------------------------------------------------------------
