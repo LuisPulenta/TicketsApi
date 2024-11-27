@@ -111,6 +111,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 UserName = request.Email,
                 UserType = UserType.User,
                 Company = request.Company,
+                CompanyId=request.IdCompany,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
@@ -200,6 +201,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
             user.Company = request.Company;
+            user.CompanyId = request.IdCompany;
 
             await _userHelper.UpdateUserAsync(user);
             return NoContent();

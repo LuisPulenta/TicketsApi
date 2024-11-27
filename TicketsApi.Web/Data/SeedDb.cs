@@ -25,10 +25,10 @@ namespace TicketsApi.Web.Data
             await _context.Database.EnsureCreatedAsync();
             await CheckCompaniesAsync();
             await CheckRolesAsycn();
-            await CheckUserAsync("Luis", "Núñez", "luis@yopmail.com", "351 681 4963", UserType.Admin, "KeyPress");
-            await CheckUserAsync("Pablo", "Lacuadri", "pablo@yopmail.com", "351 681 4963", UserType.Admin,  "KeyPress");
-            await CheckUserAsync("Lionel", "Messi", "messi@yopmail.com", "311 322 4620", UserType.User,  "Fleet");
-            await CheckUserAsync("Diego", "Maradona", "maradona@yopmail.com", "311 322 4620", UserType.User,  "Rowing");
+            await CheckUserAsync("Luis", "Núñez", "luis@yopmail.com", "351 681 4963", UserType.Admin,1, "KeyPress");
+            await CheckUserAsync("Pablo", "Lacuadri", "pablo@yopmail.com", "351 681 4963", UserType.Admin,1,  "KeyPress");
+            await CheckUserAsync("Lionel", "Messi", "messi@yopmail.com", "311 322 4620", UserType.User,2,  "Fleet");
+            await CheckUserAsync("Diego", "Maradona", "maradona@yopmail.com", "311 322 4620", UserType.User,3,  "Rowing");
             await CheckCompaniesAsync();
 
         }
@@ -41,7 +41,7 @@ namespace TicketsApi.Web.Data
         }
 
         //--------------------------------------------------------------------------------------------
-        private async Task CheckUserAsync(string firstName, string lastName, string email, string phoneNumber, UserType userType, string company)
+        private async Task CheckUserAsync(string firstName, string lastName, string email, string phoneNumber, UserType userType, int companyId,string company)
         {
             DateTime ahora = DateTime.Now;
 
@@ -56,6 +56,7 @@ namespace TicketsApi.Web.Data
                     PhoneNumber = phoneNumber,
                     UserName = email,
                     UserType = userType,
+                    CompanyId = companyId,
                     Company = company,
                     CreateDate = ahora,
                     CreateUser = "Luis Núñez",

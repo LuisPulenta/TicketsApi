@@ -23,6 +23,9 @@ namespace TicketsApi.Web.Data.Entities
         [Display(Name = "Empresa")]
         public string Company { get; set; }
 
+        [Display(Name = "Empresa")]
+        public int CompanyId { get; set; }
+
         [Display(Name = "Fecha Creación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public DateTime CreateDate { get; set; }

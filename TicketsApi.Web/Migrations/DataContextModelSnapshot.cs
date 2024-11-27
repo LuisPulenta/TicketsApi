@@ -204,7 +204,7 @@ namespace TicketsApi.Web.Migrations
                     b.Property<string>("Company")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -348,7 +348,9 @@ namespace TicketsApi.Web.Migrations
                 {
                     b.HasOne("TicketsApi.Web.Data.Entities.Company", null)
                         .WithMany("Users")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.Company", b =>
