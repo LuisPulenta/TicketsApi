@@ -35,8 +35,8 @@ namespace TicketsApi.Web.Data.Entities
         [Display(Name = "Logo")]
         public string Photo { get; set; }
         public string PhotoFullPath => string.IsNullOrEmpty(Photo)
-        ? $"http://keypress.serveftp.net:90/Tickets/images/logos/noimage.png"
-        : $"http://keypress.serveftp.net:90/Tickets{Photo.Substring(1)}";
+        ? $"https://keypress.serveftp.net/Tickets/images/logos/noimage.png"
+        : $"https://keypress.serveftp.net/Tickets{Photo.Substring(1)}";
 
         public ICollection<User>? Users { get; set; }
 
@@ -44,3 +44,5 @@ namespace TicketsApi.Web.Data.Entities
         public int UsersNumber => Users == null ? 0 : Users.Count;
     }
 }
+
+
