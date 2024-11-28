@@ -102,6 +102,8 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 return BadRequest("Ya existe un usuario registrado con  ese email.");
             }
 
+            DateTime ahora = DateTime.Now;
+
             user = new User
             {
                 Email = request.Email,
@@ -109,55 +111,14 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
-                UserType = UserType.User,
+                UserType = request.IdUserType == 0 ? UserType.User : UserType.Admin, 
                 Company = request.Company,
                 CompanyId=request.IdCompany,
-            };
+                CreateUser=request.CreateUser,
+                LastChangeUser= request.CreateUser,
+                CreateDate= ahora,
+                LastChangeDate= ahora,
 
-            await _userHelper.AddUserAsync(user, request.Password);
-            await _userHelper.AddUserToRoleAsync(user, user.UserType.ToString());
-
-            string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-            string tokenLink = Url.Action("ConfirmEmail", "Account", new
-            {
-                userid = user.Id,
-                token = myToken
-            }, protocol: HttpContext.Request.Scheme);
-
-            _mailHelper.SendMail(user.Email, "Tickets - Confirmación de cuenta", $"<h1>Tickets - Confirmación de cuenta</h1>" +
-                $"Para habilitar el usuario, " +
-                $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
-
-            return Ok(user);
-        }
-
-
-        //-------------------------------------------------------------------------------------------------
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Route("CreateAdmin")]
-        public async Task<ActionResult<User>> PostAdmin(RegisterRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            User user = await _userHelper.GetUserAsync(request.Email);
-            if (user != null)
-            {
-                return BadRequest("Ya existe un usuario registrado con  ese email.");
-            }
-
-            user = new User
-            {
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                PhoneNumber = request.PhoneNumber,
-                UserName = request.Email,
-                UserType = UserType.Admin,
-                Company = request.Company,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
