@@ -160,11 +160,19 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 return BadRequest("No existe el usuario.");
             }
 
+            DateTime ahora = DateTime.Now;
+
+            Company company = await _context.Companies.FirstOrDefaultAsync(o => o.Id == request.IdCompany);
+
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
-            user.Company = request.Company;
+            user.Company = company.Name;
             user.CompanyId = request.IdCompany;
+            user.Active= request.Active;
+            user.LastChangeUser=request.LastChangeUser;
+            user.LastChangeDate = ahora;
+
 
             await _userHelper.UpdateUserAsync(user);
             return NoContent();
