@@ -172,7 +172,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
             user.Active= request.Active;
             user.LastChangeUser=request.LastChangeUser;
             user.LastChangeDate = ahora;
-
+            user.UserType = request.IdUserType == 0 ? UserType.Admin : UserType.User;
 
             await _userHelper.UpdateUserAsync(user);
             return NoContent();
