@@ -104,6 +104,8 @@ namespace TicketsApi.Àpi.Controllers.Àpi
 
             DateTime ahora = DateTime.Now;
 
+            Company company = await _context.Companies.FirstOrDefaultAsync(o => o.Id == request.IdCompany);
+
             user = new User
             {
                 Email = request.Email,
@@ -112,7 +114,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
                 UserType = request.IdUserType == 0 ? UserType.User : UserType.Admin, 
-                Company = request.Company,
+                Company = company.Name,
                 CompanyId=request.IdCompany,
                 CreateUser=request.CreateUser,
                 LastChangeUser= request.CreateUser,

@@ -201,7 +201,7 @@ namespace TicketsApi.Web.Controllers.Api
         {
             return Ok(await _context.Companies
                   .OrderBy(c => c.Name)
-                  .Where(c => c.Active && c.Id != 1)
+                  .Where(c => c.Active)
                   .ToListAsync());
         }
     }
