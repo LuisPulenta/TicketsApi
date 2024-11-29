@@ -120,7 +120,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 LastChangeUser= request.CreateUser,
                 CreateDate= ahora,
                 LastChangeDate= ahora,
-
+                Active=true,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
