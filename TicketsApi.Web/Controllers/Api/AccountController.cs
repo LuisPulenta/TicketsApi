@@ -113,7 +113,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
-                UserType = request.IdUserType == 0 ? UserType.User : UserType.Admin, 
+                UserType = request.IdUserType == 0 ? UserType.Admin : UserType.User, 
                 Company = company.Name,
                 CompanyId=request.IdCompany,
                 CreateUser=request.CreateUser,
