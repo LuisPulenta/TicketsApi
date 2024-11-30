@@ -33,7 +33,9 @@ namespace TicketsApi.Web.Controllers.Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
         {
-            return await _context.Companies.ToListAsync();
+            return await _context.Companies
+                .Include(x=>x.Users)
+                .ToListAsync();
         }
 
         //-----------------------------------------------------------------------------------
