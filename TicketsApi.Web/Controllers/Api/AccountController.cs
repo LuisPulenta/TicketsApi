@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -267,6 +268,50 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 return BadRequest();
             }
             return Ok(user);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        [HttpPost("ResendToken")]
+        public async Task<IActionResult> ResendTokenAsync([FromBody] EmailRequest model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = await _userHelper.GetUserAsync(model.Email);
+                if (user == null)
+                {
+                    return BadRequest("El correo ingresado no corresponde a ningún usuario.");
+                }
+
+
+                Response response = (Response) await SendConfirmationEmailAsync(user);
+                if (response.IsSuccess)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest(response.Message);
+            }
+
+            return BadRequest(model);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        private async Task<IActionResult> SendConfirmationEmailAsync(User user)
+        {
+
+            string myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+            string link = Url.Action("ConfirmEmail", "Account",new 
+            {
+                userid = user.Id,
+                token = myToken,            
+            }, protocol: HttpContext.Request.Scheme);
+
+
+            _mailHelper.SendMail(user.Email, "Tickets - Confirmación de cuenta", $"<h1>Tickets - Confirmación de cuenta</h1>" +
+                $"Para habilitar el usuario, " +
+                $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{myToken}\">Confirmar Email</a>");
+        
+            return NoContent();
         }
     }
 }
