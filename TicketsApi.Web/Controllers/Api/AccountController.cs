@@ -127,16 +127,18 @@ namespace TicketsApi.Àpi.Controllers.Àpi
             await _userHelper.AddUserAsync(user, request.Password);
             await _userHelper.AddUserToRoleAsync(user, user.UserType.ToString());
 
-            string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-            string tokenLink = Url.Action("ConfirmEmail", "Account", new
-            {
-                userid = user.Id,
-                token = myToken
-            }, protocol: HttpContext.Request.Scheme);
+            await SendConfirmationEmailAsync(user);
 
-            _mailHelper.SendMail(user.Email, "Tickets - Confirmación de cuenta", $"<h1>Tickets - Confirmación de cuenta</h1>" +
-                $"Para habilitar el usuario, " +
-                $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
+            //string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+            //string tokenLink = Url.Action("ConfirmEmail", "Account", new
+            //{
+            //    userid = user.Id,
+            //    token = myToken
+            //}, protocol: HttpContext.Request.Scheme);
+
+            //_mailHelper.SendMail(user.Email, "Tickets - Confirmación de cuenta", $"<h1>Tickets - Confirmación de cuenta</h1>" +
+            //    $"Para habilitar el usuario, " +
+            //    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
 
             return Ok(user);
         }
@@ -281,15 +283,10 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 {
                     return BadRequest("El correo ingresado no corresponde a ningún usuario.");
                 }
+                
+                await SendConfirmationEmailAsync(user);
 
-
-                Response response = (Response) await SendConfirmationEmailAsync(user);
-                if (response.IsSuccess)
-                {
-                    return NoContent();
-                }
-
-                return BadRequest(response.Message);
+                return NoContent();
             }
 
             return BadRequest(model);
@@ -298,20 +295,18 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         //-------------------------------------------------------------------------------------------------
         private async Task<IActionResult> SendConfirmationEmailAsync(User user)
         {
-
-            string myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
-            string link = Url.Action("ConfirmEmail", "Account",new 
+            string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+            string tokenLink = Url.Action("ConfirmEmail", "Account", new
             {
                 userid = user.Id,
-                token = myToken,            
+                token = myToken
             }, protocol: HttpContext.Request.Scheme);
-
 
             _mailHelper.SendMail(user.Email, "Tickets - Confirmación de cuenta", $"<h1>Tickets - Confirmación de cuenta</h1>" +
                 $"Para habilitar el usuario, " +
-                $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{myToken}\">Confirmar Email</a>");
-        
-            return NoContent();
+                $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
+
+            return Ok(user);
         }
     }
 }
