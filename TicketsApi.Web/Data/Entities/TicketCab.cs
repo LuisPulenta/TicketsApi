@@ -1,0 +1,45 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using TicketsApi.Common.Enums;
+
+namespace TicketsApi.Web.Data.Entities
+{
+    public class TicketCab
+    {
+        public int Id { get; set; }
+
+        [Display(Name = "Fecha Creación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public DateTime CreateDate { get; set; }
+
+        [Display(Name = "Usuario Creación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string CreateUser { get; set; }
+
+        [Display(Name = "Empresa")]
+        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string Company { get; set; }
+
+        [Display(Name = "Asunto")]
+        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string Title { get; set; }
+
+        [Display(Name = "Descripción")]
+        [MaxLength(1000, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string Description { get; set; }
+
+        [Display(Name = "Estado")]
+        public TicketState TicketState { get; set; }
+
+        [Display(Name = "Fecha Estado")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public DateTime StateDate { get; set; }
+
+        [Display(Name = "Usuario Estado")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string StateUser { get; set; }
+    }
+}

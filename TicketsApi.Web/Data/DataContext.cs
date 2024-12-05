@@ -11,12 +11,12 @@ namespace TicketsApi.Web.Data
         }
         
         public DbSet<Company> Companies { get; set; }
-        
+        public DbSet<TicketCab> TicketCabs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Company>().HasIndex(x => x.Name).IsUnique();
         }
-
     }
 }
