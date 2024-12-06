@@ -28,7 +28,7 @@ namespace TicketsApi.Web.Controllers.Api
         public async Task<ActionResult<IEnumerable<TicketCab>>> GetTicketCabs()
         {
             return await _context.TicketCabs
-                .Include(x=>x.TicketState)
+                
                 .ToListAsync();
         }
 
