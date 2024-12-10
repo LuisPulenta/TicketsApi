@@ -10,11 +10,6 @@ namespace TicketsApi.Web.Data.Entities
         public int Id { get; set; }
         public TicketCab TicketCab { get; set; }
 
-        [Display(Name = "Asunto")]
-        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public string Title { get; set; }
-
         [Display(Name = "Descripción")]
         [MaxLength(1000, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -36,6 +31,5 @@ namespace TicketsApi.Web.Data.Entities
         public string ImageFullPath => string.IsNullOrEmpty(Image)
         ? $"https://keypress.serveftp.net/Tickets/images/tickets/noimage.png"
         : $"https://keypress.serveftp.net/Tickets{Image.Substring(1)}";
-
     }
 }

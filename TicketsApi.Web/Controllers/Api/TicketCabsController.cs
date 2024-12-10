@@ -101,7 +101,7 @@ namespace TicketsApi.Web.Controllers.Api
                 Company = ticketCab.Company,
                 CreateUser = ticketCab.CreateUser,
                 CreateDate = ahora,
-                TicketState=TicketState.Borrador,
+                TicketState=TicketState.Enviado,
             };
 
             _context.TicketCabs.Add(newTicketCab);

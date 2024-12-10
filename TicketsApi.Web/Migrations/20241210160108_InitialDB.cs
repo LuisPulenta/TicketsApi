@@ -199,10 +199,10 @@ namespace TicketsApi.Web.Migrations
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TicketState = table.Column<int>(type: "int", nullable: false),
-                    StateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StateUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StateUserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AsignDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    InProgressDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FinishDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -229,7 +229,6 @@ namespace TicketsApi.Web.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TicketCabId = table.Column<int>(type: "int", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     TicketState = table.Column<int>(type: "int", nullable: false),
                     StateDate = table.Column<DateTime>(type: "datetime2", nullable: false),

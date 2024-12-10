@@ -10,7 +10,7 @@ using TicketsApi.Web.Data;
 namespace TicketsApi.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241210013747_InitialDB")]
+    [Migration("20241210160108_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -207,6 +207,9 @@ namespace TicketsApi.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("AsignDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
@@ -220,19 +223,16 @@ namespace TicketsApi.Web.Migrations
                     b.Property<DateTime?>("FinishDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StateDate")
+                    b.Property<DateTime>("InProgressDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("StateUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StateUserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TicketState")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -269,11 +269,6 @@ namespace TicketsApi.Web.Migrations
 
                     b.Property<int>("TicketState")
                         .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

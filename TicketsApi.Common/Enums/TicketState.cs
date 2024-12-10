@@ -2,11 +2,10 @@
 {
     public enum TicketState
     {
-        Borrador,
         Enviado,
-        Rechazado,
         Devuelto,
-        Resuelto,
-        Anulado
+        Asignado,
+        Encurso,
+        Resuelto,       
     }
 }
