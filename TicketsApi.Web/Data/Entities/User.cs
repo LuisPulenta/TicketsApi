@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TicketsApi.Common.Enums;
 
@@ -21,10 +22,10 @@ namespace TicketsApi.Web.Data.Entities
         public UserType UserType { get; set; }
 
         [Display(Name = "Empresa")]
-        public string Company { get; set; }
+        public Company? Company { get; set; }
 
         [Display(Name = "Empresa")]
-        public int CompanyId { get; set; }
+        public int? CompanyId { get; set; }
 
         [Display(Name = "Fecha Creación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -32,7 +33,11 @@ namespace TicketsApi.Web.Data.Entities
 
         [Display(Name = "Usuario Creación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public string CreateUser { get; set; }
+        public string CreateUserId { get; set; }
+
+        [Display(Name = "Usuario Creación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string CreateUserName { get; set; }
 
         [Display(Name = "Fecha Ultima Modificación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -40,12 +45,21 @@ namespace TicketsApi.Web.Data.Entities
 
         [Display(Name = "Usuario Ultima Modificación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public string LastChangeUser { get; set; }
+        public string LastChangeUserId { get; set; }
+
+        [Display(Name = "Usuario Ultima Modificación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string LastChangeUserName { get; set; }
 
         [Display(Name = "Activo")]
         public bool Active { get; set; }
 
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";
+
+        public ICollection<TicketCab>? Tickets { get; set; }
+
+        [Display(Name = "Tickets")]
+        public int UsersNumber => Tickets == null ? 0 : Tickets.Count;
     }
 }

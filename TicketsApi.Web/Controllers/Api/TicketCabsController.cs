@@ -65,11 +65,7 @@ namespace TicketsApi.Web.Controllers.Api
             DateTime ahora = DateTime.Now;
 
             oldTicketCab.TicketState = ticketCab.TicketState;
-            oldTicketCab.Description = ticketCab.Description;
-            oldTicketCab.Title = ticketCab.Title;
             oldTicketCab.Company=ticketCab.Company;
-            oldTicketCab.StateDate=ahora;
-            oldTicketCab.StateUser=ticketCab.StateUser;
 
             _context.Update(oldTicketCab);
             try
@@ -103,13 +99,9 @@ namespace TicketsApi.Web.Controllers.Api
             {
                 Id = 0,
                 Company = ticketCab.Company,
-                Description = ticketCab.Description,
-                Title = ticketCab.Title,
                 CreateUser = ticketCab.CreateUser,
                 CreateDate = ahora,
                 TicketState=TicketState.Borrador,
-                StateUser=ticketCab.StateUser,
-                StateDate   =ahora,
             };
 
             _context.TicketCabs.Add(newTicketCab);

@@ -50,6 +50,7 @@ namespace TicketsApi.Web.Helpers
         public async Task<User> GetUserAsync(string email)
         {
             return await _context.Users
+                .Include(x=>x.Company)
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
 
@@ -109,7 +110,7 @@ namespace TicketsApi.Web.Helpers
                 PhoneNumber = model.PhoneNumber,
                 UserName = model.Username,
                 UserType = userType,
-                Company = model.Company,
+                Company = company,
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, model.Password);

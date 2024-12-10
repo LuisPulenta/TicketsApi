@@ -12,6 +12,9 @@ using System.IO;
 using TicketsApi.Common.Helpers;
 using TicketsApi.Web.Models.Request;
 using Org.BouncyCastle.Asn1.Ocsp;
+using TicketsApi.Web.Helpers;
+using TicketsApi.Web.Models;
+using System.Numerics;
 
 namespace TicketsApi.Web.Controllers.Api
 {
@@ -22,34 +25,115 @@ namespace TicketsApi.Web.Controllers.Api
     {
         private readonly DataContext _context;
         private readonly IFilesHelper _filesHelper;
+        private readonly IUserHelper _userHelper;
 
-        public CompaniesController(DataContext context, IFilesHelper filesHelper)
+        public CompaniesController(IUserHelper userHelper,DataContext context, IFilesHelper filesHelper )
         {
             _context = context;
             _filesHelper = filesHelper;
+            _userHelper = userHelper;
         }
 
         //-----------------------------------------------------------------------------------
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
         {
-            return await _context.Companies
-                .Include(x=>x.Users)
-                .ToListAsync();
+            List<Company> companies = await _context.Companies
+              .Include(x => x.Users)
+              .OrderBy(x => x.Name)
+              .ToListAsync();
+
+            List<CompanyViewModel> list = new List<CompanyViewModel>();
+
+            foreach (Company company in companies)
+            {
+                CompanyViewModel companyViewModel = new CompanyViewModel
+                {
+                    Id = company.Id,
+                    Name = company.Name,
+                    CreateDate = company.CreateDate,
+                    CreateUserId = company.CreateUserId,
+                    CreateUserName = company.CreateUserName,
+                    LastChangeDate = company.LastChangeDate,
+                    LastChangeUserId = company.LastChangeUserId,
+                    LastChangeUserName = company.LastChangeName,
+                    Active = company.Active,
+                    Photo=company.Photo,
+                    Users = company.Users?.Select(user => new UserViewModel
+                    {
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        UserTypeId = (int)user.UserType,
+                        UserTypeName = user.UserType.ToString(),
+                        Email = user.Email,
+                        EmailConfirm = user.EmailConfirmed,
+                        PhoneNumber = user.PhoneNumber,
+                        CompanyId = user.Company.Id,
+                        CompanyName = user.Company.Name,
+                        CreateDate = user.CreateDate,
+                        CreateUserId = user.CreateUserId,
+                        CreateUserName = user.CreateUserName,
+                        LastChangeDate = user.LastChangeDate,
+                        LastChangeUserId = user.LastChangeUserId,
+                        LastChangeUserName = user.LastChangeUserName,
+                        Active = user.Active,
+                    }).ToList(),
+                };
+
+                list.Add(companyViewModel);
+            }
+            return Ok(list);
         }
 
         //-----------------------------------------------------------------------------------
         [HttpGet("{id}")]
-        public async Task<ActionResult<Company>> GetCompany(int id)
+        public async Task<ActionResult<CompanyViewModel>> GetCompany(int id)
         {
-            Company company = await _context.Companies.FindAsync(id);
+
+            Company company = await _context.Companies
+                .Include(u => u.Users)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
 
             if (company == null)
             {
                 return NotFound();
             }
 
-            return company;
+            return new CompanyViewModel
+            {
+                Id = company.Id,
+                Name = company.Name,
+                CreateDate = company.CreateDate,
+                CreateUserId = company.CreateUserId,
+                CreateUserName = company.CreateUserName,
+                LastChangeDate = company.LastChangeDate,
+                LastChangeUserId = company.LastChangeUserId,
+                LastChangeUserName = company.CreateUserName,
+                Active = company.Active,
+                Photo = company.Photo,
+                Users = company.Users?.Select(user => new UserViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserTypeId = (int)user.UserType,
+                    UserTypeName = user.UserType.ToString(),
+                    Email = user.Email,
+                    EmailConfirm = user.EmailConfirmed,
+                    PhoneNumber = user.PhoneNumber,
+                    CompanyId = user.Company.Id,
+                    CompanyName = user.Company.Name,
+                    CreateDate = user.CreateDate,
+                    CreateUserId = user.CreateUserId,
+                    CreateUserName = user.CreateUserName,
+                    LastChangeDate = user.LastChangeDate,
+                    LastChangeUserId = user.LastChangeUserId,
+                    LastChangeUserName = user.LastChangeUserName,
+                    Active = user.Active,
+                }).ToList(),
+            };
         }
 
         //-----------------------------------------------------------------------------------
@@ -88,10 +172,9 @@ namespace TicketsApi.Web.Controllers.Api
             }
 
             DateTime ahora = DateTime.Now;
+            User lastChangeUser = await _userHelper.GetUserByIdAsync(companyRequest.LastChangeUserId);
 
             oldCompany!.Active = companyRequest.Active;
-            oldCompany.LastChangeUser = companyRequest.LastChangeUser;
-            oldCompany!.LastChangeDate = ahora;
             oldCompany!.Name = companyRequest.Name;
 
             _context.Update(oldCompany);
@@ -128,16 +211,20 @@ namespace TicketsApi.Web.Controllers.Api
             }
 
             DateTime ahora = DateTime.Now;
+            User createUser = await _userHelper.GetUserByIdAsync(companyRequest.CreateUserId);
+            User lastChangeUser = await _userHelper.GetUserByIdAsync(companyRequest.LastChangeUserId);
 
             Company newCompany = new Company
             {
                 Id = 0,
                 Name = companyRequest.Name,
                 Active = true,
-                CreateUser = companyRequest.CreateUser,
+                CreateUserId = createUser.Id,
+                CreateUserName=createUser.UserName,
                 CreateDate = ahora,
-                LastChangeUser = companyRequest.LastChangeUser,
-                LastChangeDate = ahora,
+                LastChangeDate=ahora,
+                LastChangeUserId=lastChangeUser.Id,
+                LastChangeName=lastChangeUser.FullName,
                 Photo = null
             };
 
@@ -201,10 +288,33 @@ namespace TicketsApi.Web.Controllers.Api
         [HttpGet("combo")]
         public async Task<ActionResult> GetCombo()
         {
-            return Ok(await _context.Companies
-                  .OrderBy(c => c.Name)
-                  .Where(c => c.Active)
-                  .ToListAsync());
+            List<Company> companies = await _context.Companies
+             .OrderBy(x => x.Name)
+             .Where(c => c.Active)
+             .ToListAsync();
+
+            List<CompanyViewModel> list = new List<CompanyViewModel>();
+
+            foreach (Company company in companies)
+            {
+                CompanyViewModel companyViewModel = new CompanyViewModel
+                {
+                    Id = company.Id,
+                    Name = company.Name,
+                    CreateDate = company.CreateDate,
+                    CreateUserId = company.CreateUserId,
+                    CreateUserName = company.CreateUserName,
+                    LastChangeDate = company.LastChangeDate,
+                    LastChangeUserId = company.LastChangeUserId,
+                    LastChangeUserName = company.LastChangeName,
+                    Active = company.Active,
+                    Photo = company.Photo,
+                    Users = {},
+                };
+
+                list.Add(companyViewModel);
+            }
+            return Ok(list);
         }
     }
 }

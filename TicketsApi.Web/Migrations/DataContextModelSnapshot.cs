@@ -163,14 +163,22 @@ namespace TicketsApi.Web.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreateUser")
+                    b.Property<string>("CreateUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreateUserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastChangeDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastChangeUser")
+                    b.Property<string>("LastChangeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastChangeUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -197,29 +205,65 @@ namespace TicketsApi.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreateUser")
+                    b.Property<string>("CreateUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("FinishDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StateUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TicketState")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.ToTable("TicketCabs");
+                });
+
+            modelBuilder.Entity("TicketsApi.Web.Data.Entities.TicketDet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("StateUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("StateUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("TicketCabId")
+                        .HasColumnType("int");
 
                     b.Property<int>("TicketState")
                         .HasColumnType("int");
@@ -231,7 +275,11 @@ namespace TicketsApi.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TicketCabs");
+                    b.HasIndex("StateUserId");
+
+                    b.HasIndex("TicketCabId");
+
+                    b.ToTable("TicketDet");
                 });
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.User", b =>
@@ -245,10 +293,7 @@ namespace TicketsApi.Web.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Company")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -258,7 +303,11 @@ namespace TicketsApi.Web.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreateUser")
+                    b.Property<string>("CreateUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreateUserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -277,7 +326,11 @@ namespace TicketsApi.Web.Migrations
                     b.Property<DateTime>("LastChangeDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastChangeUser")
+                    b.Property<string>("LastChangeUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastChangeUserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -388,18 +441,60 @@ namespace TicketsApi.Web.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TicketsApi.Web.Data.Entities.User", b =>
+            modelBuilder.Entity("TicketsApi.Web.Data.Entities.TicketCab", b =>
                 {
-                    b.HasOne("TicketsApi.Web.Data.Entities.Company", null)
-                        .WithMany("Users")
-                        .HasForeignKey("CompanyId")
+                    b.HasOne("TicketsApi.Web.Data.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.HasOne("TicketsApi.Web.Data.Entities.User", "CreateUser")
+                        .WithMany("Tickets")
+                        .HasForeignKey("CreateUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("CreateUser");
+                });
+
+            modelBuilder.Entity("TicketsApi.Web.Data.Entities.TicketDet", b =>
+                {
+                    b.HasOne("TicketsApi.Web.Data.Entities.User", "StateUser")
+                        .WithMany()
+                        .HasForeignKey("StateUserId");
+
+                    b.HasOne("TicketsApi.Web.Data.Entities.TicketCab", "TicketCab")
+                        .WithMany("TicketDets")
+                        .HasForeignKey("TicketCabId");
+
+                    b.Navigation("StateUser");
+
+                    b.Navigation("TicketCab");
+                });
+
+            modelBuilder.Entity("TicketsApi.Web.Data.Entities.User", b =>
+                {
+                    b.HasOne("TicketsApi.Web.Data.Entities.Company", "Company")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.Company", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("TicketsApi.Web.Data.Entities.TicketCab", b =>
+                {
+                    b.Navigation("TicketDets");
+                });
+
+            modelBuilder.Entity("TicketsApi.Web.Data.Entities.User", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

@@ -32,15 +32,15 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         private readonly DataContext _context;
         private readonly IMailHelper _mailHelper;
         private readonly IImageHelper _imageHelper;
+        
 
-        public AccountController(IUserHelper userHelper, IConfiguration configuration, DataContext context, IMailHelper mailHelper, IImageHelper imageHelper)
+        public AccountController(IUserHelper userHelper, IConfiguration configuration, DataContext context, IMailHelper mailHelper, IImageHelper imageHelper )
         {
             _userHelper = userHelper;
             _configuration = configuration;
             _context = context;
             _mailHelper = mailHelper;
             _imageHelper = imageHelper;
-
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -50,10 +50,31 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         {
             if (ModelState.IsValid)
             {
-                User user = await _userHelper.GetUserAsync(model.Username);
-                if (user != null)
+                User user2 = await _userHelper.GetUserAsync(model.Username);
+                if (user2 != null)
                 {
-                    var result = await _userHelper.ValidatePasswordAsync(user, model.Password);
+                    var result = await _userHelper.ValidatePasswordAsync(user2, model.Password);
+
+                    UserViewModel user = new UserViewModel
+                    {
+                        Id = user2.Id,
+                        FirstName = user2.FirstName,
+                        LastName = user2.LastName,
+                        UserTypeId = (int)user2.UserType,
+                        UserTypeName = user2.UserType.ToString(),
+                        Email = user2.Email,
+                        EmailConfirm = user2.EmailConfirmed,
+                        PhoneNumber = user2.PhoneNumber,
+                        CompanyId = user2.Company != null ? user2.Company.Id : 1,
+                        CompanyName = user2.Company != null ? user2.Company.Name : "KeyPress",
+                        CreateDate = user2.CreateDate,
+                        CreateUserId = user2.CreateUserId,
+                        CreateUserName = user2.CreateUserName,
+                        LastChangeDate = user2.LastChangeDate,
+                        LastChangeUserId = user2.LastChangeUserId,
+                        LastChangeUserName = user2.LastChangeUserName,
+                        Active = user2.Active,
+                    };
 
                     if (result.Succeeded)
                     {
@@ -106,6 +127,8 @@ namespace TicketsApi.Àpi.Controllers.Àpi
             DateTime ahora = DateTime.Now;
 
             Company company = await _context.Companies.FirstOrDefaultAsync(o => o.Id == request.IdCompany);
+            User createUser = await _userHelper.GetUserByIdAsync(request.CreateUserId);
+            User lastChangeUser = await _userHelper.GetUserByIdAsync(request.LastChangeUserId);
 
             user = new User
             {
@@ -114,33 +137,43 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                 LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
-                UserType = request.IdUserType == 0 ? UserType.Admin : UserType.User, 
-                Company = company.Name,
-                CompanyId=request.IdCompany,
-                CreateUser=request.CreateUser,
-                LastChangeUser= request.CreateUser,
-                CreateDate= ahora,
+                UserType = request.IdUserType == 0 ? UserType.AdminKP : request.IdUserType == 1 ?UserType.Admin :UserType.User, 
+                CompanyId = company.Id,
+                CreateUserId= createUser.Id,
+                CreateUserName = createUser.FullName,
+                LastChangeUserId = lastChangeUser.Id,
+                LastChangeUserName = lastChangeUser.FullName,
+                CreateDate = ahora,
                 LastChangeDate= ahora,
                 Active=true,
             };
 
             await _userHelper.AddUserAsync(user, request.Password);
             await _userHelper.AddUserToRoleAsync(user, user.UserType.ToString());
-
             await SendConfirmationEmailAsync(user);
 
-            //string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-            //string tokenLink = Url.Action("ConfirmEmail", "Account", new
-            //{
-            //    userid = user.Id,
-            //    token = myToken
-            //}, protocol: HttpContext.Request.Scheme);
+            UserViewModel user2 = new UserViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserTypeId = (int)user.UserType,
+                UserTypeName = user.UserType.ToString(),
+                Email = user.Email,
+                EmailConfirm = user.EmailConfirmed,
+                PhoneNumber = user.PhoneNumber,
+                CompanyId = user.Company != null ? user.Company.Id : 1,
+                CompanyName = user.Company != null ? user.Company.Name : "KeyPress",
+                CreateDate = user.CreateDate,
+                CreateUserId = user.CreateUserId,
+                CreateUserName = user.CreateUserName,
+                LastChangeDate = user.LastChangeDate,
+                LastChangeUserId = user.LastChangeUserId,
+                LastChangeUserName = user.LastChangeUserName,
+                Active = user.Active,
+            };
 
-            //_mailHelper.SendMail(user.Email, "Tickets - Confirmación de cuenta", $"<h1>Tickets - Confirmación de cuenta</h1>" +
-            //    $"Para habilitar el usuario, " +
-            //    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
-
-            return Ok(user);
+            return Ok(user2);
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -166,16 +199,17 @@ namespace TicketsApi.Àpi.Controllers.Àpi
             DateTime ahora = DateTime.Now;
 
             Company company = await _context.Companies.FirstOrDefaultAsync(o => o.Id == request.IdCompany);
+            User lastChangeUser = await _userHelper.GetUserByIdAsync(request.LastChangeUserId);
 
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
-            user.Company = company.Name;
-            user.CompanyId = request.IdCompany;
+            user.Company = company;
             user.Active= request.Active;
-            user.LastChangeUser=request.LastChangeUser;
+            user.LastChangeUserId= lastChangeUser.Id;
+            user.LastChangeUserName = lastChangeUser.FullName;
             user.LastChangeDate = ahora;
-            user.UserType = request.IdUserType == 0 ? UserType.Admin : UserType.User;
+            user.UserType = request.IdUserType == 0 ? UserType.AdminKP : request.IdUserType == 1 ? UserType.Admin : UserType.User;
 
             await _userHelper.UpdateUserAsync(user);
             return NoContent();
@@ -245,15 +279,83 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             List<User> users = await _context.Users
-                .OrderBy(x => x.Company + x.LastName + x.FirstName)
+                .Include(x => x.Company)
+                .OrderBy(x => x.Company.Name + x.LastName + x.FirstName)
                 .ToListAsync();
 
-          
-            return Ok(users);
+            List<UserViewModel> list = new List<UserViewModel>();
+            foreach (User user in users)
+            {
+                UserViewModel userViewModel = new UserViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserTypeId = (int)user.UserType,
+                    UserTypeName = user.UserType.ToString(),
+                    Email = user.Email,
+                    EmailConfirm = user.EmailConfirmed,
+                    PhoneNumber = user.PhoneNumber,
+                    CompanyId = user.Company != null ? user.Company.Id : 1,
+                    CompanyName = user.Company != null ? user.Company.Name:"KeyPress",
+                    CreateDate = user.CreateDate,
+                    CreateUserId = user.CreateUserId,
+                    CreateUserName = user.CreateUserName,
+                    LastChangeDate = user.LastChangeDate,
+                    LastChangeUserId = user.LastChangeUserId,
+                    LastChangeUserName = user.LastChangeUserName,
+                    Active = user.Active,
+                };
+
+                list.Add(userViewModel);
+            }
+            return Ok(list);
         }
 
         //-------------------------------------------------------------------------------------------------
         [HttpPost]
+        [Route("GetUsers/{CompanyId}")]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsersByCompanyId(int CompanyId)
+
+        {
+            List<User> users = await _context.Users
+                .Include(x => x.Company)
+                .Where(x=>x.Company.Id == CompanyId)
+                .OrderBy(x => x.Company.Name + x.LastName + x.FirstName)
+                .ToListAsync();
+
+            List<UserViewModel> list = new List<UserViewModel>();
+            foreach (User user in users)
+            {
+                UserViewModel userViewModel = new UserViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserTypeId = (int)user.UserType,
+                    UserTypeName = user.UserType.ToString(),
+                    Email = user.Email,
+                    EmailConfirm = user.EmailConfirmed,
+                    PhoneNumber = user.PhoneNumber,
+                    CompanyId = user.Company != null ? user.Company.Id : 1,
+                    CompanyName = user.Company != null ? user.Company.Name : "KeyPress",
+                    CreateDate = user.CreateDate,
+                    CreateUserId = user.CreateUserId,
+                    CreateUserName = user.CreateUserName,
+                    LastChangeDate = user.LastChangeDate,
+                    LastChangeUserId = user.LastChangeUserId,
+                    LastChangeUserName = user.LastChangeUserName,
+                    Active = user.Active,
+                };
+                list.Add(userViewModel);
+            }
+
+
+            return Ok(list);
+        }
+
+            //-------------------------------------------------------------------------------------------------
+            [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("GetUserByEmail")]
         public async Task<IActionResult> GetUser(EmailRequest email)

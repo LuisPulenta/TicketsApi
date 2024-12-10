@@ -6,6 +6,7 @@ namespace TicketsApi.Web.Data.Entities
 {
     public class Company
     {
+        [Key]
         public int Id { get; set; }
 
         [Display(Name = "Empresa")]
@@ -19,7 +20,11 @@ namespace TicketsApi.Web.Data.Entities
 
         [Display(Name = "Usuario Creación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public string CreateUser { get; set; }
+        public string CreateUserId { get; set; }
+
+        [Display(Name = "Usuario Creación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string CreateUserName { get; set; }
 
         [Display(Name = "Fecha Ultima Modificación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -27,7 +32,11 @@ namespace TicketsApi.Web.Data.Entities
 
         [Display(Name = "Usuario Ultima Modificación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public string LastChangeUser { get; set; }
+        public string LastChangeUserId { get; set; }
+
+        [Display(Name = "Usuario Ultima Modificación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string LastChangeName { get; set; }
 
         [Display(Name = "Activo")]
         public bool Active { get; set; }
