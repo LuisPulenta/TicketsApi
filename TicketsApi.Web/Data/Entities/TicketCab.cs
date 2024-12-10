@@ -33,11 +33,11 @@ namespace TicketsApi.Web.Data.Entities
 
         [Display(Name = "Fecha Asignación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public DateTime AsignDate { get; set; }
+        public DateTime? AsignDate { get; set; }
 
         [Display(Name = "Fecha En CUrso")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public DateTime InProgressDate { get; set; }
+        public DateTime? InProgressDate { get; set; }
 
         [Display(Name = "Fecha Fin")]
         public DateTime? FinishDate { get; set; }
