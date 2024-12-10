@@ -176,6 +176,9 @@ namespace TicketsApi.Web.Controllers.Api
 
             oldCompany!.Active = companyRequest.Active;
             oldCompany!.Name = companyRequest.Name;
+            oldCompany!.LastChangeDate=ahora;
+            oldCompany!.LastChangeUserId=lastChangeUser.Id;
+            oldCompany.LastChangeName = lastChangeUser.FullName;
 
             _context.Update(oldCompany);
             try
