@@ -208,15 +208,15 @@ namespace TicketsApi.Web.Migrations
                     b.Property<DateTime?>("AsignDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("FinishDate")
                         .HasColumnType("datetime2");
@@ -232,11 +232,17 @@ namespace TicketsApi.Web.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("CreateUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("TicketCabs");
                 });
@@ -438,19 +444,11 @@ namespace TicketsApi.Web.Migrations
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.TicketCab", b =>
                 {
-                    b.HasOne("TicketsApi.Web.Data.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("TicketsApi.Web.Data.Entities.User", "CreateUser")
+                    b.HasOne("TicketsApi.Web.Data.Entities.User", null)
                         .WithMany("Tickets")
-                        .HasForeignKey("CreateUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("CreateUser");
                 });
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.TicketDet", b =>

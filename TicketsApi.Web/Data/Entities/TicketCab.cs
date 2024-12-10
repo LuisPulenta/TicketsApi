@@ -16,12 +16,18 @@ namespace TicketsApi.Web.Data.Entities
 
         [Display(Name = "Usuario Creación")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public User CreateUser { get; set; }
+        public string UserId { get; set; }
+
+        [Display(Name = "Usuario Creación")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string UserName { get; set; }
 
         [Display(Name = "Empresa")]
-        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public Company Company { get; set; }
+        public string CompanyName { get; set; }
+
+        [Display(Name = "Empresa")]
+        public int CompanyId { get; set; }
 
         [Display(Name = "Asunto")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]

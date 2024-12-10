@@ -8,6 +8,8 @@ using TicketsApi.Web.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using TicketsApi.Common.Enums;
+using System.Linq;
+using TicketsApi.Web.Models;
 
 namespace TicketsApi.Web.Controllers.Api
 {
@@ -27,9 +29,41 @@ namespace TicketsApi.Web.Controllers.Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TicketCab>>> GetTicketCabs()
         {
-            return await _context.TicketCabs
-                
-                .ToListAsync();
+            List<TicketCab> ticketCabs = await _context.TicketCabs
+              .OrderBy(x => x.CompanyName)
+              .OrderBy(x => x.Id)
+              .ToListAsync();
+
+            List<TicketCabViewModel> list = new List<TicketCabViewModel>();
+
+            
+
+            foreach (TicketCab ticketCab in ticketCabs)
+            {
+                User createUser = await _context.Users
+                .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
+
+                TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
+                {
+                    Id = ticketCab.Id,
+                    CreateDate = ticketCab.CreateDate,
+                    CreateUserId = createUser.Id,
+                    CreateUserName = createUser.FullName,
+                    CompanyId = ticketCab.CompanyId,
+                    CompanyName = ticketCab.CompanyName,
+                    Title = ticketCab.Title,
+                    TicketState = ticketCab.TicketState,
+                    AsignDate = ticketCab.AsignDate,
+                    InProgressDate = ticketCab.InProgressDate,
+                    FinishDate = ticketCab.FinishDate,
+                    TicketDets = ticketCab.TicketDets
+                };
+                list.Add(ticketCabViewModel);
+            }
+            return Ok(list);
+
+
+
         }
 
         //-----------------------------------------------------------------------------------
@@ -65,7 +99,8 @@ namespace TicketsApi.Web.Controllers.Api
             DateTime ahora = DateTime.Now;
 
             oldTicketCab.TicketState = ticketCab.TicketState;
-            oldTicketCab.Company=ticketCab.Company;
+            oldTicketCab.CompanyId=ticketCab.CompanyId;
+            oldTicketCab.CompanyName = ticketCab.CompanyName;
 
             _context.Update(oldTicketCab);
             try
@@ -98,8 +133,10 @@ namespace TicketsApi.Web.Controllers.Api
             TicketCab newTicketCab = new TicketCab
             {
                 Id = 0,
-                Company = ticketCab.Company,
-                CreateUser = ticketCab.CreateUser,
+                CompanyId = ticketCab.CompanyId,
+                CompanyName = ticketCab.CompanyName,
+                UserId = ticketCab.UserId,
+                UserName = ticketCab.UserName,
                 CreateDate = ahora,
                 TicketState=TicketState.Enviado,
             };
