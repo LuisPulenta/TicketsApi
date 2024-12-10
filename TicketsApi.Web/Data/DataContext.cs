@@ -12,6 +12,7 @@ namespace TicketsApi.Web.Data
         
         public DbSet<Company> Companies { get; set; }
         public DbSet<TicketCab> TicketCabs { get; set; }
+        public DbSet<TicketDet> TicketDets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

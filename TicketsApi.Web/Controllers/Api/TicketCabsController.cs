@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authorization;
 using TicketsApi.Common.Enums;
 using System.Linq;
 using TicketsApi.Web.Models;
+using TicketsApi.Web.Models.Request;
+using System.IO;
+using TicketsApi.Common.Helpers;
 
 namespace TicketsApi.Web.Controllers.Api
 {
@@ -19,10 +22,12 @@ namespace TicketsApi.Web.Controllers.Api
     public class TicketCabsController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IFilesHelper _filesHelper;
 
-        public TicketCabsController(DataContext context)
+        public TicketCabsController(DataContext context, IFilesHelper filesHelper)
         {
             _context = context;
+            _filesHelper = filesHelper;
         }
 
         //-----------------------------------------------------------------------------------
@@ -121,6 +126,7 @@ namespace TicketsApi.Web.Controllers.Api
         
         //-----------------------------------------------------------------------------------
         [HttpPost]
+        [Route("PostTicketCab")]
         public async Task<ActionResult<TicketCab>> PostTicketCab(TicketCab ticketCab)
         {
             if (!ModelState.IsValid)
@@ -133,14 +139,18 @@ namespace TicketsApi.Web.Controllers.Api
             TicketCab newTicketCab = new TicketCab
             {
                 Id = 0,
-                CompanyId = ticketCab.CompanyId,
-                CompanyName = ticketCab.CompanyName,
+                CreateDate = ahora,
                 UserId = ticketCab.UserId,
                 UserName = ticketCab.UserName,
-                CreateDate = ahora,
+                CompanyId = ticketCab.CompanyId,
+                CompanyName = ticketCab.CompanyName,
+                Title=ticketCab.Title,
                 TicketState=TicketState.Enviado,
+                AsignDate=null,
+                InProgressDate=null,
+                FinishDate=null,                
             };
-
+            
             _context.TicketCabs.Add(newTicketCab);
 
             try
@@ -157,6 +167,61 @@ namespace TicketsApi.Web.Controllers.Api
                 return BadRequest(exception.Message);
             }
         }
+
+        //-----------------------------------------------------------------------------------
+        [HttpPost]
+        [Route("PostTicketDet")]
+        public async Task<ActionResult<TicketCab>> PostTicketDet(TicketDetRequest ticketDetRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            DateTime ahora = DateTime.Now;
+            TicketCab ticketCab = await _context.TicketCabs.FirstOrDefaultAsync(o => o.Id == ticketDetRequest.TicketCabId);
+
+            TicketDet newTicketDet = new TicketDet
+            {
+                Id = 0,
+                TicketCab = ticketCab,
+                Description= ticketDetRequest.Description,
+                StateDate = ticketDetRequest.StateDate,
+                TicketState = TicketState.Enviado,                
+                StateUserId= ticketDetRequest.StateUserId,
+                StateUserName= ticketDetRequest.StateUserName,
+            };
+
+            //Foto
+            if (ticketDetRequest.ImageArray != null)
+            {
+                var stream = new MemoryStream(ticketDetRequest.ImageArray);
+                var guid = Guid.NewGuid().ToString();
+                var file = $"{guid}.jpg";
+                var folder = "wwwroot\\images\\Tickets";
+                var fullPath = $"~/images/Tickets/{file}";
+                var response = _filesHelper.UploadPhoto(stream, folder, file);
+
+                if (response)
+                {
+                    newTicketDet.Image = fullPath;
+                }
+            }
+
+            _context.TicketDets.Add(newTicketDet);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(newTicketDet);
+            }
+            
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
+
         //-----------------------------------------------------------------------------------
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTicketCab(int id)

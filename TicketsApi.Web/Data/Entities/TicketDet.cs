@@ -24,7 +24,11 @@ namespace TicketsApi.Web.Data.Entities
 
         [Display(Name = "Usuario Estado")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public User StateUser { get; set; }
+        public string StateUserId { get; set; }
+
+        [Display(Name = "Usuario Estado")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string StateUserName { get; set; }
 
         [Display(Name = "Imagen")]
         public string Image { get; set; }
