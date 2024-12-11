@@ -9,7 +9,7 @@ namespace TicketsApi.Web.Models.Request
         public int TicketCabId { get; set; }
         public string Description { get; set; }
         public DateTime StateDate { get; set; }
-        public TicketState TicketState { get; set; }
+        public int TicketState { get; set; }
         public string StateUserId { get; set; }
         public string StateUserName { get; set; }
         public byte[] ImageArray { get; set; }

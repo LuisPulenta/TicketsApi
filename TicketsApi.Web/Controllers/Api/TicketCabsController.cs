@@ -181,13 +181,33 @@ namespace TicketsApi.Web.Controllers.Api
             DateTime ahora = DateTime.Now;
             TicketCab ticketCab = await _context.TicketCabs.FirstOrDefaultAsync(o => o.Id == ticketDetRequest.TicketCabId);
 
+            TicketState ticketState = TicketState.Enviado;
+
+            if (ticketDetRequest.TicketState == 1)
+            {
+                ticketState = TicketState.Devuelto;
+            }
+            if (ticketDetRequest.TicketState == 2)
+            {
+                ticketState = TicketState.Asignado;
+            }
+            if (ticketDetRequest.TicketState == 3)
+            {
+                ticketState = TicketState.Encurso;
+            }
+            if (ticketDetRequest.TicketState == 4)
+            {
+                ticketState = TicketState.Resuelto;
+            }
+
+
             TicketDet newTicketDet = new TicketDet
             {
                 Id = 0,
                 TicketCab = ticketCab,
                 Description= ticketDetRequest.Description,
-                StateDate = ticketDetRequest.StateDate,
-                TicketState = TicketState.Enviado,                
+                StateDate = ahora,
+                TicketState = ticketState,                
                 StateUserId= ticketDetRequest.StateUserId,
                 StateUserName= ticketDetRequest.StateUserName,
             };

@@ -266,7 +266,12 @@ namespace TicketsApi.Web.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("StateUserId")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TicketCabId")
                         .HasColumnType("int");
@@ -276,11 +281,9 @@ namespace TicketsApi.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StateUserId");
-
                     b.HasIndex("TicketCabId");
 
-                    b.ToTable("TicketDet");
+                    b.ToTable("TicketDets");
                 });
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.User", b =>
@@ -453,15 +456,9 @@ namespace TicketsApi.Web.Migrations
 
             modelBuilder.Entity("TicketsApi.Web.Data.Entities.TicketDet", b =>
                 {
-                    b.HasOne("TicketsApi.Web.Data.Entities.User", "StateUser")
-                        .WithMany()
-                        .HasForeignKey("StateUserId");
-
                     b.HasOne("TicketsApi.Web.Data.Entities.TicketCab", "TicketCab")
                         .WithMany("TicketDets")
                         .HasForeignKey("TicketCabId");
-
-                    b.Navigation("StateUser");
 
                     b.Navigation("TicketCab");
                 });
