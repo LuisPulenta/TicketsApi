@@ -18,7 +18,7 @@ namespace TicketsApi.Web.Models
         public DateTime? AsignDate { get; set; }
         public DateTime? InProgressDate { get; set; }
         public DateTime? FinishDate { get; set; }
-        public ICollection<TicketDet>? TicketDets { get; set; }
+        public ICollection<TicketDetViewModel>? TicketDets { get; set; }
         public int TicketDetsNumber => TicketDets == null ? 0 : TicketDets.Count;
     }
 }

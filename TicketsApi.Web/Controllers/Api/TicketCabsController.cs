@@ -14,6 +14,7 @@ using TicketsApi.Web.Models.Request;
 using System.IO;
 using TicketsApi.Common.Helpers;
 using static System.Net.Mime.MediaTypeNames;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TicketsApi.Web.Controllers.Api
 {
@@ -36,6 +37,7 @@ namespace TicketsApi.Web.Controllers.Api
         public async Task<ActionResult<IEnumerable<TicketCab>>> GetTicketCabs()
         {
             List<TicketCab> ticketCabs = await _context.TicketCabs
+                .Include(x => x.TicketDets)
               .OrderBy(x => x.CompanyName)
               .OrderBy(x => x.Id)
               .ToListAsync();
@@ -48,6 +50,26 @@ namespace TicketsApi.Web.Controllers.Api
             {
                 User createUser = await _context.Users
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
+
+
+                string ticketStateName = "Enviado";
+
+                if (ticketCab.TicketState == TicketState.Devuelto)
+                {
+                    ticketStateName = "Devuelto";
+                }
+                if (ticketCab.TicketState == TicketState.Asignado)
+                {
+                    ticketStateName = "Asignado";
+                }
+                if (ticketCab.TicketState == TicketState.Encurso)
+                {
+                    ticketStateName = "Encurso";
+                }
+                if (ticketCab.TicketState == TicketState.Resuelto)
+                {
+                    ticketStateName = "Resuelto";
+                }
 
                 TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
                 {
@@ -62,7 +84,17 @@ namespace TicketsApi.Web.Controllers.Api
                     AsignDate = ticketCab.AsignDate,
                     InProgressDate = ticketCab.InProgressDate,
                     FinishDate = ticketCab.FinishDate,
-                    TicketDets = ticketCab.TicketDets
+                    TicketDets = ticketCab.TicketDets?.Select(ticketCab => new TicketDetViewModel
+                    {
+                        Id = ticketCab.Id,
+                        Description = ticketCab.Description,
+                        TicketState = ticketStateName,
+                        StateDate = ticketCab.StateDate,
+                        StateUserId = ticketCab.StateUserId,
+                        StateUserName = ticketCab.StateUserName,
+                        Image = ticketCab.Image,
+
+                    }).ToList(),
                 };
                 list.Add(ticketCabViewModel);
             }
