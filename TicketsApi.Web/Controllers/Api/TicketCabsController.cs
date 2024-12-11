@@ -105,20 +105,6 @@ namespace TicketsApi.Web.Controllers.Api
         }
 
         //-----------------------------------------------------------------------------------
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TicketCab>> GetTicketCab(int id)
-        {
-            TicketCab ticketCab = await _context.TicketCabs.FindAsync(id);
-
-            if (ticketCab == null)
-            {
-                return NotFound();
-            }
-
-            return ticketCab;
-        }
-
-        //-----------------------------------------------------------------------------------
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTicketCab(int id, TicketCab ticketCab)
         {
@@ -322,5 +308,73 @@ namespace TicketsApi.Web.Controllers.Api
 
             return NoContent();
         }
-    }
+
+        //-----------------------------------------------------------------------------------
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TicketCabViewModel>> GetTicketCab(int id)
+        {
+
+            TicketCab ticketCab = await _context.TicketCabs
+                .Include(u => u.TicketDets)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+
+            if (ticketCab == null)
+            {
+                return NotFound();
+            }
+
+            User createUser = await _context.Users
+                .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
+
+            string ticketStateName = "Enviado";
+
+            if (ticketCab.TicketState == TicketState.Devuelto)
+            {
+                ticketStateName = "Devuelto";
+            }
+            if (ticketCab.TicketState == TicketState.Asignado)
+            {
+                ticketStateName = "Asignado";
+            }
+            if (ticketCab.TicketState == TicketState.Encurso)
+            {
+                ticketStateName = "Encurso";
+            }
+            if (ticketCab.TicketState == TicketState.Resuelto)
+            {
+                ticketStateName = "Resuelto";
+            }
+
+            TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
+            {
+                Id = ticketCab.Id,
+                CreateDate = ticketCab.CreateDate,
+                CreateUserId = createUser.Id,
+                CreateUserName = createUser.FullName,
+                CompanyId = ticketCab.CompanyId,
+                CompanyName = ticketCab.CompanyName,
+                Title = ticketCab.Title,
+                TicketState = ticketCab.TicketState,
+                AsignDate = ticketCab.AsignDate,
+                InProgressDate = ticketCab.InProgressDate,
+                FinishDate = ticketCab.FinishDate,
+                TicketDets = ticketCab.TicketDets?.Select(ticketCab => new TicketDetViewModel
+                {
+                    Id = ticketCab.Id,
+                    Description = ticketCab.Description,
+                    TicketState = ticketStateName,
+                    StateDate = ticketCab.StateDate,
+                    StateUserId = ticketCab.StateUserId,
+                    StateUserName = ticketCab.StateUserName,
+                    Image = ticketCab.Image,
+
+                }).ToList()
+            };
+
+            return ticketCabViewModel;
+        
+            }
+        }
+    
 }
