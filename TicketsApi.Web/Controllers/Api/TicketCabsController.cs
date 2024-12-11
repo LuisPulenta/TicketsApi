@@ -13,6 +13,7 @@ using TicketsApi.Web.Models;
 using TicketsApi.Web.Models.Request;
 using System.IO;
 using TicketsApi.Common.Helpers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TicketsApi.Web.Controllers.Api
 {
@@ -233,7 +234,39 @@ namespace TicketsApi.Web.Controllers.Api
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok(newTicketDet);
+
+                string ticketStateName = "Enviado";
+                
+                if (newTicketDet.TicketState == TicketState.Devuelto)
+                {
+                    ticketStateName = "Devuelto";
+                }
+                if (newTicketDet.TicketState == TicketState.Asignado)
+                {
+                    ticketStateName = "Asignado";
+                }
+                if (newTicketDet.TicketState == TicketState.Encurso)
+                {
+                    ticketStateName = "Encurso";
+                }
+                if (newTicketDet.TicketState == TicketState.Resuelto)
+                {
+                    ticketStateName = "Resuelto";
+                }
+
+
+                TicketDetViewModel ticketDetViewModel = new TicketDetViewModel
+                {
+                    Id = newTicketDet.Id,
+                    Description = newTicketDet.Description,
+                    TicketState = ticketStateName,
+                    StateDate = newTicketDet.StateDate,
+                    StateUserId = newTicketDet.StateUserId,
+                    StateUserName = newTicketDet.StateUserName,
+                    Image = newTicketDet.Image
+                };                 
+
+                return Ok(ticketDetViewModel);
             }
             
             catch (Exception exception)
