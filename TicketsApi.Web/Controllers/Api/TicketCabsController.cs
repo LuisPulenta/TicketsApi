@@ -260,7 +260,7 @@ namespace TicketsApi.Web.Controllers.Api
                     Id = newTicketDet.Id,
                     Description = newTicketDet.Description,
                     TicketState = ticketStateName,
-                    StateDate = newTicketDet.StateDate,
+                    StateDate = ahora,
                     StateUserId = newTicketDet.StateUserId,
                     StateUserName = newTicketDet.StateUserName,
                     Image = newTicketDet.Image
