@@ -359,18 +359,18 @@ namespace TicketsApi.Web.Controllers.Api
                 AsignDate = ticketCab.AsignDate,
                 InProgressDate = ticketCab.InProgressDate,
                 FinishDate = ticketCab.FinishDate,
-                TicketDets = ticketCab.TicketDets?.Select(ticketCab => new TicketDetViewModel
+                TicketDets = ticketCab.TicketDets?.Select(ticketDet => new TicketDetViewModel
                 {
                     Id = ticketCab.Id,
-                    Description = ticketCab.Description,
-                    TicketState = ticketStateName,
-                    StateDate = ticketCab.StateDate,
-                    StateUserId = ticketCab.StateUserId,
-                    StateUserName = ticketCab.StateUserName,
-                    Image = ticketCab.Image,
+                            Description = ticketDet.Description,
+                            TicketState = ticketDet.TicketState.ToString(),
+                            StateDate = ticketDet.StateDate,
+                            StateUserId = ticketDet.StateUserId,
+                            StateUserName = ticketDet.StateUserName,
+                            Image = ticketDet.Image,
 
-                }).ToList()
-            };
+                        }).ToList()
+                    };
 
             return ticketCabViewModel;
         
