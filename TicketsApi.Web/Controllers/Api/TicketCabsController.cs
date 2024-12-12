@@ -106,9 +106,9 @@ namespace TicketsApi.Web.Controllers.Api
 
         //-----------------------------------------------------------------------------------
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTicketCab(int id, TicketCab ticketCab)
+        public async Task<IActionResult> PutTicketCab(int id, TicketCabRequest ticketCabRequest)
         {
-            if (id != ticketCab.Id)
+            if (id != ticketCabRequest.Id)
             {
                 return BadRequest();
             }
@@ -118,13 +118,34 @@ namespace TicketsApi.Web.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            TicketCab oldTicketCab = await _context.TicketCabs.FirstOrDefaultAsync(o => o.Id == ticketCab.Id);
+            TicketCab oldTicketCab = await _context.TicketCabs.FirstOrDefaultAsync(o => o.Id == ticketCabRequest.Id);
 
             DateTime ahora = DateTime.Now;
 
-            oldTicketCab.TicketState = ticketCab.TicketState;
-            oldTicketCab.CompanyId=ticketCab.CompanyId;
-            oldTicketCab.CompanyName = ticketCab.CompanyName;
+            if (ticketCabRequest.TicketState == 0)
+            {
+                oldTicketCab.TicketState = TicketState.Enviado;
+            }
+            if (ticketCabRequest.TicketState == 1)
+            {
+                oldTicketCab.TicketState = TicketState.Devuelto;
+            }
+            if (ticketCabRequest.TicketState == 2)
+            {
+                oldTicketCab.TicketState = TicketState.Asignado;
+            }
+            if (ticketCabRequest.TicketState == 3)
+            {
+                oldTicketCab.TicketState = TicketState.Encurso;
+            }
+            if (ticketCabRequest.TicketState == 4)
+            {
+                oldTicketCab.TicketState = TicketState.Resuelto;
+            }
+
+            oldTicketCab.AsignDate = ticketCabRequest.AsignDate;
+            oldTicketCab.InProgressDate = ticketCabRequest.InProgressDate;
+            oldTicketCab.FinishDate = ticketCabRequest.FinishDate;
 
             _context.Update(oldTicketCab);
             try
