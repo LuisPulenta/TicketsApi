@@ -28,15 +28,17 @@ namespace TicketsApi.Web.Helpers
                 message.From.Add(new MailboxAddress(from));
                 message.To.Add(new MailboxAddress(to));
                 message.Subject = subject;
+
                 BodyBuilder bodyBuilder = new BodyBuilder
                 {
                     HtmlBody = body
+                    
                 };
                 message.Body = bodyBuilder.ToMessageBody();
 
                 using (SmtpClient client = new SmtpClient())
                 {
-                    client.Connect(smtp, int.Parse(port), false);
+                    client.Connect(smtp, int.Parse(port), true);
                     client.Authenticate(from, password);
                     client.Send(message);
                     client.Disconnect(true);
