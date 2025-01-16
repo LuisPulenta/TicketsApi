@@ -428,10 +428,11 @@ namespace TicketsApi.Àpi.Controllers.Àpi
 
 
         //-------------------------------------------------------------------------------------------------
-        [HttpDelete("{Id}")]
-        public async Task<IActionResult> DeleteAsync(string id)
+        [HttpDelete]
+        [Route("DeleteUserById/{Id}")]
+        public async Task<IActionResult> DeleteUserById(string Id)
         {
-            User user = await _userHelper.GetUserAsync(new Guid(id));
+            User user = await _userHelper.GetUserAsync(new Guid(Id));
             if (user == null)
             {
                 return NotFound();
