@@ -280,6 +280,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         {
             List<User> users = await _context.Users
                 .Include(x => x.Company)
+                .Include(x => x.Tickets)
                 .OrderBy(x => x.Company.Name + x.LastName + x.FirstName)
                 .ToListAsync();
 
@@ -305,6 +306,20 @@ namespace TicketsApi.Àpi.Controllers.Àpi
                     LastChangeUserId = user.LastChangeUserId,
                     LastChangeUserName = user.LastChangeUserName,
                     Active = user.Active,
+                    Tickets = user.Tickets?.Select(ticket => new TicketCabViewModel
+                    {
+                        Id = ticket.Id,
+                        CreateDate = ticket.CreateDate,
+                        CreateUserId = ticket.UserId,
+                        CreateUserName = ticket.UserName,
+                        CompanyId = ticket.CompanyId,
+                        CompanyName = ticket.CompanyName,
+                        Title = ticket.Title,
+                        TicketState = ticket.TicketState,
+                        AsignDate = ticket.AsignDate,
+                        InProgressDate = ticket.InProgressDate,
+                        FinishDate = ticket.FinishDate,
+                    }).ToList(),
                 };
 
                 list.Add(userViewModel);

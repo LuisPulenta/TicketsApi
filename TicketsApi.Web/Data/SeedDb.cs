@@ -23,7 +23,7 @@ namespace TicketsApi.Web.Data
         {
             await _context.Database.EnsureCreatedAsync();
             await CheckRolesAsycn();
-            await CheckUserAsync("Luis", "Núñez", "luis@yopmail.com", "351 681 4963", UserType.AdminKP, null);
+            await CheckUserAsync("Luis", "Núñez", "luisalbertonu@gmail.com", "351 681 4963", UserType.AdminKP, null);
 
             await CheckCompaniesAsync();
 
@@ -31,16 +31,16 @@ namespace TicketsApi.Web.Data
             Company fleet = await _context.Companies.FirstOrDefaultAsync(o => o.Id == 2);
             Company rowing = await _context.Companies.FirstOrDefaultAsync(o => o.Id == 3);
 
-            await CheckUserAsync("Pablo", "Lacuadri", "pablo@yopmail.com", "351 111 2222", UserType.AdminKP, keypress);
+            //await CheckUserAsync("Pablo", "Lacuadri", "pablo@yopmail.com", "351 111 2222", UserType.AdminKP, keypress);
 
-            await CheckUserAsync("Darío", "Nolose", "dario@yopmail.com", "11 4444 5555", UserType.Admin, fleet);
-            await CheckUserAsync("Gonzalo", "Prieto", "gonzalo@yopmail.com", "11 2222 3333", UserType.Admin, rowing);
+            //await CheckUserAsync("Darío", "Nolose", "dario@yopmail.com", "11 4444 5555", UserType.Admin, fleet);
+            //await CheckUserAsync("Gonzalo", "Prieto", "gonzalo@yopmail.com", "11 2222 3333", UserType.Admin, rowing);
             
-            await CheckUserAsync("Lionel", "Messi", "messi@yopmail.com", "311 322 4620", UserType.User, fleet);
-            await CheckUserAsync("Diego", "Maradona", "maradona@yopmail.com", "311 322 4620", UserType.User, fleet);
-            await CheckUserAsync("Mario", "Kempes", "kempes@yopmail.com", "311 322 4620", UserType.User, rowing);
-            await CheckUserAsync("Gabriel", "Batistuta", "batistuta@yopmail.com", "311 322 4620", UserType.User, rowing);
-            await CheckUserAsync("Daniel", "Passarella", "passarella@yopmail.com", "311 322 4620", UserType.User, rowing);
+            //await CheckUserAsync("Lionel", "Messi", "messi@yopmail.com", "311 322 4620", UserType.User, fleet);
+            //await CheckUserAsync("Diego", "Maradona", "maradona@yopmail.com", "311 322 4620", UserType.User, fleet);
+            //await CheckUserAsync("Mario", "Kempes", "kempes@yopmail.com", "311 322 4620", UserType.User, rowing);
+            //await CheckUserAsync("Gabriel", "Batistuta", "batistuta@yopmail.com", "311 322 4620", UserType.User, rowing);
+            //await CheckUserAsync("Daniel", "Passarella", "passarella@yopmail.com", "311 322 4620", UserType.User, rowing);
             
             await CheckCompaniesAsync();
         }
