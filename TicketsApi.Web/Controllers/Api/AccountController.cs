@@ -425,5 +425,19 @@ namespace TicketsApi.Àpi.Controllers.Àpi
 
             return Ok(user);
         }
+
+
+        //-------------------------------------------------------------------------------------------------
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            User user = await _userHelper.GetUserAsync(new Guid(id));
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await _userHelper.DeleteUserAsync(user);
+            return NoContent();
+        }
     }
 }
