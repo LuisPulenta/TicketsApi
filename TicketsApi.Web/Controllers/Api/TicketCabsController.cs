@@ -71,6 +71,10 @@ namespace TicketsApi.Web.Controllers.Api
                 {
                     ticketStateName = "Resuelto";
                 }
+                if (ticketCab.TicketState == TicketState.Derivado)
+                {
+                    ticketStateName = "Derivado";
+                }
 
                 TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
                 {
@@ -83,6 +87,8 @@ namespace TicketsApi.Web.Controllers.Api
                     Title = ticketCab.Title,
                     TicketState = ticketCab.TicketState,
                     AsignDate = ticketCab.AsignDate,
+                    UserAsign = ticketCab.UserAsign,
+                    UserAsignName = ticketCab.UserAsignName,
                     InProgressDate = ticketCab.InProgressDate,
                     FinishDate = ticketCab.FinishDate,
                     TicketDets = ticketCab.TicketDets?.Select(ticketCab => new TicketDetViewModel
@@ -140,6 +146,11 @@ namespace TicketsApi.Web.Controllers.Api
             {
                 oldTicketCab.TicketState = TicketState.Resuelto;
             }
+            if (ticketCabRequest.TicketState == 5)
+            {
+                oldTicketCab.TicketState = TicketState.Derivado;
+            }
+
 
             oldTicketCab.AsignDate = ticketCabRequest.AsignDate;
             oldTicketCab.InProgressDate = ticketCabRequest.InProgressDate;
@@ -185,6 +196,8 @@ namespace TicketsApi.Web.Controllers.Api
                 Title = ticketCab.Title,
                 TicketState = TicketState.Enviado,
                 AsignDate = null,
+                UserAsign = ticketCab.UserAsign,
+                UserAsignName = ticketCab.UserAsignName,
                 InProgressDate = null,
                 FinishDate = null,
             };
@@ -236,6 +249,10 @@ namespace TicketsApi.Web.Controllers.Api
             if (ticketDetRequest.TicketState == 4)
             {
                 ticketState = TicketState.Resuelto;
+            }
+            if (ticketDetRequest.TicketState == 5)
+            {
+                ticketState = TicketState.Derivado;
             }
 
 
@@ -289,6 +306,10 @@ namespace TicketsApi.Web.Controllers.Api
                 if (newTicketDet.TicketState == TicketState.Resuelto)
                 {
                     ticketStateName = "Resuelto";
+                }
+                if (newTicketDet.TicketState == TicketState.Derivado)
+                {
+                    ticketStateName = "Derivado";
                 }
 
 
@@ -364,6 +385,10 @@ namespace TicketsApi.Web.Controllers.Api
             {
                 ticketStateName = "Resuelto";
             }
+            if (ticketCab.TicketState == TicketState.Derivado)
+            {
+                ticketStateName = "Derivado";
+            }
 
             TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
             {
@@ -376,6 +401,8 @@ namespace TicketsApi.Web.Controllers.Api
                 Title = ticketCab.Title,
                 TicketState = ticketCab.TicketState,
                 AsignDate = ticketCab.AsignDate,
+                UserAsign = ticketCab.UserAsign,
+                UserAsignName = ticketCab.UserAsignName,
                 InProgressDate = ticketCab.InProgressDate,
                 FinishDate = ticketCab.FinishDate,
                 TicketDets = ticketCab.TicketDets?.Select(ticketDet => new TicketDetViewModel
@@ -433,6 +460,10 @@ namespace TicketsApi.Web.Controllers.Api
                 {
                     ticketStateName = "Resuelto";
                 }
+                if (ticketCab.TicketState == TicketState.Derivado)
+                {
+                    ticketStateName = "Derivado";
+                }
 
                 TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
                 {
@@ -445,6 +476,8 @@ namespace TicketsApi.Web.Controllers.Api
                     Title = ticketCab.Title,
                     TicketState = ticketCab.TicketState,
                     AsignDate = ticketCab.AsignDate,
+                    UserAsign = ticketCab.UserAsign,
+                    UserAsignName = ticketCab.UserAsignName,
                     InProgressDate = ticketCab.InProgressDate,
                     FinishDate = ticketCab.FinishDate,
                     TicketDets = ticketCab.TicketDets?.Select(ticketCab => new TicketDetViewModel
@@ -502,6 +535,10 @@ namespace TicketsApi.Web.Controllers.Api
                 {
                     ticketStateName = "Resuelto";
                 }
+                if (ticketCab.TicketState == TicketState.Derivado)
+                {
+                    ticketStateName = "Derivado";
+                }
 
                 TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
                 {
@@ -514,6 +551,8 @@ namespace TicketsApi.Web.Controllers.Api
                     Title = ticketCab.Title,
                     TicketState = ticketCab.TicketState,
                     AsignDate = ticketCab.AsignDate,
+                    UserAsign = ticketCab.UserAsign,
+                    UserAsignName = ticketCab.UserAsignName,
                     InProgressDate = ticketCab.InProgressDate,
                     FinishDate = ticketCab.FinishDate,
                     TicketDets = ticketCab.TicketDets?.Select(ticketCab => new TicketDetViewModel
@@ -571,6 +610,11 @@ namespace TicketsApi.Web.Controllers.Api
                 {
                     ticketStateName = "Resuelto";
                 }
+                if (ticketCab.TicketState == TicketState.Derivado)
+                {
+                    ticketStateName = "Derivado";
+                }
+
 
                 TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
                 {
@@ -583,6 +627,8 @@ namespace TicketsApi.Web.Controllers.Api
                     Title = ticketCab.Title,
                     TicketState = ticketCab.TicketState,
                     AsignDate = ticketCab.AsignDate,
+                    UserAsign = ticketCab.UserAsign,
+                    UserAsignName = ticketCab.UserAsignName,
                     InProgressDate = ticketCab.InProgressDate,
                     FinishDate = ticketCab.FinishDate,
                     TicketDets = ticketCab.TicketDets?.Select(ticketCab => new TicketDetViewModel
@@ -663,6 +709,10 @@ namespace TicketsApi.Web.Controllers.Api
                 {
                     ticketStateName = "Resuelto";
                 }
+                if (ticketCab.TicketState == TicketState.Derivado)
+                {
+                    ticketStateName = "Derivado";
+                }
 
                 TicketCabViewModel ticketCabViewModel = new TicketCabViewModel
                 {
@@ -675,6 +725,8 @@ namespace TicketsApi.Web.Controllers.Api
                     Title = ticketCab.Title,
                     TicketState = ticketCab.TicketState,
                     AsignDate = ticketCab.AsignDate,
+                    UserAsign = ticketCab.UserAsign,
+                    UserAsignName = ticketCab.UserAsignName,
                     InProgressDate = ticketCab.InProgressDate,
                     FinishDate = ticketCab.FinishDate,
                     TicketDets = ticketCab.TicketDets?.Select(ticketCab => new TicketDetViewModel

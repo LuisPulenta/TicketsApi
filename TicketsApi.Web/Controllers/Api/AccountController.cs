@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -14,7 +13,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TicketsApi.Common.Enums;
-using TicketsApi.Common.Models;
 using TicketsApi.Web.Data;
 using TicketsApi.Web.Data.Entities;
 using TicketsApi.Web.Helpers;
@@ -452,6 +450,48 @@ namespace TicketsApi.Àpi.Controllers.Àpi
             }
             await _userHelper.DeleteUserAsync(user);
             return NoContent();
+        }
+
+        //-----------------------------------------------------------------------------------
+     
+        [HttpGet("combo/{Id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<IEnumerable<User>>> GetCombo(int Id)
+        {
+            List<User> users = await _context.Users
+                .Include(x => x.Company)
+                .OrderBy(x => x.LastName + x.FirstName)
+                .Where(c => c.Active && c.CompanyId == Id)
+                .ToListAsync();
+
+            List<UserViewModel> list = new List<UserViewModel>();
+            foreach (User user in users)
+            {
+                UserViewModel userViewModel = new UserViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserTypeId = (int)user.UserType,
+                    UserTypeName = user.UserType.ToString(),
+                    Email = user.Email,
+                    EmailConfirm = user.EmailConfirmed,
+                    PhoneNumber = user.PhoneNumber,
+                    CompanyId = user.Company != null ? user.Company.Id : 1,
+                    CompanyName = user.Company != null ? user.Company.Name : "KeyPress",
+                    CreateDate = user.CreateDate,
+                    CreateUserId = user.CreateUserId,
+                    CreateUserName = user.CreateUserName,
+                    LastChangeDate = user.LastChangeDate,
+                    LastChangeUserId = user.LastChangeUserId,
+                    LastChangeUserName = user.LastChangeUserName,
+                    Active = user.Active,
+                    Tickets = {},
+                };
+
+                list.Add(userViewModel);
+            }
+            return Ok(list);
         }
     }
 }

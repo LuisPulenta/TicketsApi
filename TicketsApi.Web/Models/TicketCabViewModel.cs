@@ -16,6 +16,8 @@ namespace TicketsApi.Web.Models
         public string Title { get; set; }
         public TicketState TicketState { get; set; }
         public DateTime? AsignDate { get; set; }
+        public string UserAsign { get; set; }
+        public string UserAsignName { get; set; }
         public DateTime? InProgressDate { get; set; }
         public DateTime? FinishDate { get; set; }
         public ICollection<TicketDetViewModel>? TicketDets { get; set; }

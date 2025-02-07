@@ -6,6 +6,7 @@
         Devuelto,
         Asignado,
         Encurso,
-        Resuelto,       
+        Resuelto,   
+        Derivado
     }
 }

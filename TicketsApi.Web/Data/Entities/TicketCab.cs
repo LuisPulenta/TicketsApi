@@ -40,6 +40,12 @@ namespace TicketsApi.Web.Data.Entities
         [Display(Name = "Fecha Asignación")]
         public DateTime? AsignDate { get; set; }
 
+        [Display(Name = "Usuario Asignación")]
+        public string UserAsign { get; set; }
+
+        [Display(Name = "Usuario Asignación")]
+        public string UserAsignName { get; set; }
+
         [Display(Name = "Fecha En Curso")]
         public DateTime? InProgressDate { get; set; }
 
