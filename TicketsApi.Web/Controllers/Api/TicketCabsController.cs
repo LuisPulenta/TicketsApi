@@ -155,6 +155,8 @@ namespace TicketsApi.Web.Controllers.Api
             oldTicketCab.AsignDate = ticketCabRequest.AsignDate;
             oldTicketCab.InProgressDate = ticketCabRequest.InProgressDate;
             oldTicketCab.FinishDate = ticketCabRequest.FinishDate;
+            oldTicketCab.UserAsign = ticketCabRequest.UserAsign;
+            oldTicketCab.UserAsignName = ticketCabRequest.UserAsignName;
 
             _context.Update(oldTicketCab);
             try
@@ -233,6 +235,7 @@ namespace TicketsApi.Web.Controllers.Api
             TicketCab ticketCab = await _context.TicketCabs.FirstOrDefaultAsync(o => o.Id == ticketDetRequest.TicketCabId);
 
             TicketState ticketState = TicketState.Enviado;
+            
 
             if (ticketDetRequest.TicketState == 1)
             {

@@ -1,7 +1,4 @@
-﻿using System;
-using TicketsApi.Common.Enums;
-
-namespace TicketsApi.Web.Models.Request
+﻿namespace TicketsApi.Web.Models.Request
 {
     public class TicketDetRequest
     {
