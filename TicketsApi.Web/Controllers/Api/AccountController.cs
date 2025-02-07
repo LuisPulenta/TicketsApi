@@ -460,7 +460,7 @@ namespace TicketsApi.Àpi.Controllers.Àpi
         {
             List<User> users = await _context.Users
                 .Include(x => x.Company)
-                .OrderBy(x => x.FullName)
+                .OrderBy(x => x.FirstName + x.LastName)
                 .Where(c => c.Active && c.CompanyId == Id && c.UserType==UserType.User)
                 .ToListAsync();
 
