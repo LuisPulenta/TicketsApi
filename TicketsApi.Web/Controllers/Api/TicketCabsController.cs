@@ -752,14 +752,14 @@ namespace TicketsApi.Web.Controllers.Api
 
         //-----------------------------------------------------------------------------------
         [HttpPost()]
-        [Route("GetTicketParaResolver")]
-        public async Task<ActionResult<IEnumerable<TicketCab>>> GetTicketParaResolver(TicketResueltosRequest request)
+        [Route("GetTicketParaResolver/{id}")]
+        public async Task<ActionResult<IEnumerable<TicketCab>>> GetTicketParaResolver(String id)
         {
             List<TicketCab> ticketCabs = new List<TicketCab>();
           
                 ticketCabs = await _context.TicketCabs
                 .Include(x => x.TicketDets)
-                .Where(x => x.UserAsign == request.UserId && x.TicketState == TicketState.Derivado)
+                .Where(x => x.UserAsign == id && x.TicketState == TicketState.Derivado)
                 .OrderBy(x => x.AsignDate)
                 .ToListAsync();
            
