@@ -8,6 +8,8 @@
         public int TicketState { get; set; }
         public string StateUserId { get; set; }
         public string StateUserName { get; set; }
+        public string FileName { get; set; }
+        public string FileExtension { get; set; }
         public byte[] ImageArray { get; set; }
     }
 }

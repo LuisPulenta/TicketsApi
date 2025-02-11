@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using TicketsApi.Common.Enums;
 using System.Linq;
+
 using TicketsApi.Web.Models;
 using TicketsApi.Web.Models.Request;
 using System.IO;
@@ -274,8 +275,9 @@ namespace TicketsApi.Web.Controllers.Api
             if (ticketDetRequest.ImageArray != null)
             {
                 var stream = new MemoryStream(ticketDetRequest.ImageArray);
-                var guid = Guid.NewGuid().ToString();
-                var file = $"{guid}.jpg";
+                var fileName= ticketDetRequest.FileName.Substring(0, ticketDetRequest.FileName.IndexOf(".", 0));
+                var guid = $"{fileName}{Guid.NewGuid().ToString()}";
+                var file = $"{guid}.{ticketDetRequest.FileExtension}";
                 var folder = "wwwroot\\images\\Tickets";
                 var fullPath = $"~/images/Tickets/{file}";
                 var response = _filesHelper.UploadPhoto(stream, folder, file);
