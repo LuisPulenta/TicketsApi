@@ -54,8 +54,12 @@ namespace TicketsApi.Web.Controllers.Api
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
 
 
-                string ticketStateName = "Enviado";
+                string ticketStateName = "";
 
+                if (ticketCab.TicketState == TicketState.Enviado)
+                {
+                    ticketStateName = "Enviado";
+                }
                 if (ticketCab.TicketState == TicketState.Devuelto)
                 {
                     ticketStateName = "Devuelto";
@@ -236,8 +240,11 @@ namespace TicketsApi.Web.Controllers.Api
             TicketCab ticketCab = await _context.TicketCabs.FirstOrDefaultAsync(o => o.Id == ticketDetRequest.TicketCabId);
 
             TicketState ticketState = TicketState.Enviado;
-            
 
+            if (ticketDetRequest.TicketState == 0)
+            {
+                ticketState = TicketState.Enviado;
+            }
             if (ticketDetRequest.TicketState == 1)
             {
                 ticketState = TicketState.Devuelto;
@@ -294,8 +301,12 @@ namespace TicketsApi.Web.Controllers.Api
             {
                 await _context.SaveChangesAsync();
 
-                string ticketStateName = "Enviado";
+                string ticketStateName = "";
 
+                if (newTicketDet.TicketState == TicketState.Enviado)
+                {
+                    ticketStateName = "Enviado";
+                }
                 if (newTicketDet.TicketState == TicketState.Devuelto)
                 {
                     ticketStateName = "Devuelto";
@@ -372,8 +383,12 @@ namespace TicketsApi.Web.Controllers.Api
             User createUser = await _context.Users
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
 
-            string ticketStateName = "Enviado";
+            string ticketStateName = "";
 
+            if (ticketCab.TicketState == TicketState.Enviado)
+            {
+                ticketStateName = "Enviado";
+            }
             if (ticketCab.TicketState == TicketState.Devuelto)
             {
                 ticketStateName = "Devuelto";
@@ -447,8 +462,12 @@ namespace TicketsApi.Web.Controllers.Api
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
 
 
-                string ticketStateName = "Enviado";
+                string ticketStateName = "";
 
+                if (ticketCab.TicketState == TicketState.Enviado)
+                {
+                    ticketStateName = "Enviado";
+                }
                 if (ticketCab.TicketState == TicketState.Devuelto)
                 {
                     ticketStateName = "Devuelto";
@@ -522,8 +541,11 @@ namespace TicketsApi.Web.Controllers.Api
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
 
 
-                string ticketStateName = "Enviado";
-
+                string ticketStateName = "";
+                if (ticketCab.TicketState == TicketState.Enviado)
+                {
+                    ticketStateName = "Enviado";
+                }
                 if (ticketCab.TicketState == TicketState.Devuelto)
                 {
                     ticketStateName = "Devuelto";
@@ -597,8 +619,12 @@ namespace TicketsApi.Web.Controllers.Api
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
 
 
-                string ticketStateName = "Enviado";
+                string ticketStateName = "";
 
+                if (ticketCab.TicketState == TicketState.Enviado)
+                {
+                    ticketStateName = "Enviado";
+                }
                 if (ticketCab.TicketState == TicketState.Devuelto)
                 {
                     ticketStateName = "Devuelto";
@@ -696,8 +722,11 @@ namespace TicketsApi.Web.Controllers.Api
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
 
 
-                string ticketStateName = "Enviado";
-
+                string ticketStateName = "";
+                if (ticketCab.TicketState == TicketState.Enviado)
+                {
+                    ticketStateName = "Enviado";
+                }
                 if (ticketCab.TicketState == TicketState.Devuelto)
                 {
                     ticketStateName = "Devuelto";
@@ -774,8 +803,12 @@ namespace TicketsApi.Web.Controllers.Api
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
 
 
-                string ticketStateName = "Enviado";
+                string ticketStateName = "";
 
+                if (ticketCab.TicketState == TicketState.Enviado)
+                {
+                    ticketStateName = "Enviado";
+                }
                 if (ticketCab.TicketState == TicketState.Devuelto)
                 {
                     ticketStateName = "Devuelto";
