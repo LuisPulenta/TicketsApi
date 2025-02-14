@@ -46,13 +46,10 @@ namespace TicketsApi.Web.Controllers.Api
 
             List<TicketCabViewModel> list = new List<TicketCabViewModel>();
 
-
-
             foreach (TicketCab ticketCab in ticketCabs)
             {
                 User createUser = await _context.Users
                 .FirstOrDefaultAsync(p => p.Id == ticketCab.UserId);
-
 
                 string ticketStateName = "";
 
@@ -429,12 +426,11 @@ namespace TicketsApi.Web.Controllers.Api
                 {
                     Id = ticketCab.Id,
                     Description = ticketDet.Description,
-                    TicketState = ticketDet.TicketState.ToString(),
+                    TicketState = ticketStateName,
                     StateDate = ticketDet.StateDate,
                     StateUserId = ticketDet.StateUserId,
                     StateUserName = ticketDet.StateUserName,
                     Image = ticketDet.Image,
-
                 }).ToList()
             };
 
