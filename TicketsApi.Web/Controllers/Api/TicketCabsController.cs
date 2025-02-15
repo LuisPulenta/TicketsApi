@@ -426,7 +426,7 @@ namespace TicketsApi.Web.Controllers.Api
                 {
                     Id = ticketCab.Id,
                     Description = ticketDet.Description,
-                    TicketState = ticketStateName,
+                    TicketState = ticketDet.TicketState.ToString(),
                     StateDate = ticketDet.StateDate,
                     StateUserId = ticketDet.StateUserId,
                     StateUserName = ticketDet.StateUserName,
